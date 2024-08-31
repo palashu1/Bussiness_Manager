@@ -1,0 +1,113 @@
+﻿@model Bussiness_Manager.Models.Members
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+
+<div class="container-sm mt-3">
+    <div class="row justify-content-center shadow-lg weight" style="background-color:white;">
+        <div class="col-md-5">
+            <form asp-action="Registration" method="post" class="small-text">
+
+                <div class="form-group mb-3 g1">
+                    <input asp-for="firstName" placeholder=" " class="form-control Re" />
+                    <label asp-for="firstName">First name</label>
+                    <span asp-validation-for="firstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input asp-for="lastName" placeholder=" " class="form-control Re" />
+                    <label asp-for="lastName">Last name</label>
+                    <span asp-validation-for="lastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input asp-for="email" class="form-control Re" placeholder=" " type="email" />
+                    <label asp-for="email">Email</label>
+                    <span asp-validation-for="email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input asp-for="phone" class="form-control Re" type="number" placeholder=" " />
+                    <label asp-for="phone">Mobile no</label>
+                    <span asp-validation-for="phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input asp-for="password" class="form-control Re" type="password" placeholder=" " />
+                    <label asp-for="password">Password</label>
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <input asp-for="confirmPassword" class="form-control Re" type="password" placeholder=" " />
+                    <label asp-for="confirmPassword">Confirm Passwrd</label>
+                    <span asp-validation-for="confirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <a href="@Url.Action("Login", "Home")" class="custom-link">Already have an account?</a>
+                </div>
+
+                @* <button id="confirmationButton" type="submit" class="btn btn-primary form-group mb-3 w-100 weight" data-has-message="@(TempData["ConfirmationMessage"] != null)"> Sign Up</button> *@
+                <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight"  onclick="displayAlert()"> Sign Up</button>
+            </form>
+        </div>
+
+        <div class="col-md-7 widget">
+            <div class=" h-100 d-flex justify-content-center align-items-center">
+                <i class="fa-solid fa-shapes fa-2xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        @if (TempData["ShowAlert"] != null)
+        {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        title: 'Done',
+                        text: '@ViewBag.message',
+                        icon: 'success',
+                        timer: 3000, // Duration of the alert
+                        timerProgressBar: true,
+                        didClose: () => {
+                            // Redirect after the alert closes
+                            window.location.href = '@Url.Action("Login", "Home")';
+                        }
+                    });
+                });
+            </script>
+        }
+        @if (TempData["ShowAlert1"] != null)
+        {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        title: 'Failed',
+                        text: '@ViewBag.message',
+                        icon: 'error',
+                        timer: 3000, // Duration of the alert
+                        timerProgressBar: true,
+                        didClose: () => {
+                            // Redirect after the alert closes
+                            window.location.href = '@Url.Action("Registration", "Home")';
+                        }
+                    });
+                });
+            </script>
+        }
+    }
+}
+
+
+
+

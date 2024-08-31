@@ -1,0 +1,171 @@
+﻿@model List<ShopDetail>
+
+@{
+    ViewData["Title"] = "Shops";
+}
+
+
+<div class="text-center" style="background-color:white; border-radius:1rem;">
+    <h1 class="display-4">Shops</h1>
+    <br />
+
+    <form asp-action="updateToken" method="post">
+        <div class="table-wrapper text-center" style="background-color:white; border-radius:1rem;">
+
+            <table class="scrollable-table">
+                <thead>
+                    <tr>
+                        <th>
+                            Shop Id
+                        </th>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Bussiness Type
+                        </th>
+                        <th>
+                            Logo
+                        </th>
+                        <th>
+                            Address
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Creation Date
+                        </th>
+                        <th>
+                            Choose One
+                        </th>
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var shop in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @shop.shopId
+                                </td>
+                                <td>
+                                    @shop.shopName
+                                </td>
+                                <td>
+                                    @shop.bussinessType
+                                </td>
+                                <td>
+                                    @shop.logo
+                                </td>
+                                <td>
+                                    @shop.shopAddress
+                                </td>
+                                <td>
+                                    @shop.shopDescription
+                                </td>
+                                <td>
+                                    @shop.createdOn.Value.ToString("dd/MM/yyyy")
+                                </td>
+                                <td>
+                                    <input type="checkbox"
+                                           class="checkbox-item"
+                                           name="selectedCheckbox"
+                                           value="@shop.shopId"
+                                           onclick="handleCheckboxClick(this)" />
+                                </td>
+
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="dropdown-toggle" type="button">
+                                            &#9776; <!-- This is the hamburger icon (three lines) -->
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item">Edit</a>
+                                            <a class="dropdown-item">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="text-lg-end" style=" border-color:black">
+            <p class="para"> Total shops : @ViewBag.Shops</p>
+            <button class="btn btn-primary text-white bto" type="submit" id="submitButton" disabled  >Next-></button>
+        </div>
+    </form>
+    
+
+</div>
+
+
+
+@section Scripts {
+
+<!-- #Code dedicate to checkbox -->
+
+    <script>
+        function handleCheckboxClick(clickedCheckbox) {
+            var checkboxes = document.getElementsByName('selectedCheckbox');
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox !== clickedCheckbox) {
+                    checkbox.checked = false;
+                }
+            });
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to update the submit button state
+            function updateSubmitButtonState() {
+                // Check if any checkbox is checked
+                var anyChecked = $('.checkbox-item:checked').length > 0;
+                if (anyChecked) {
+                    $('#submitButton').prop('disabled', false); // Enable the button
+                } else {
+                    $('#submitButton').prop('disabled', true); // Disable the button
+                }
+            }
+            // Initial check on page load
+            updateSubmitButtonState();
+            // Attach the change event listener to all checkboxes
+            $('.checkbox-item').on('change', function () {
+                updateSubmitButtonState();
+            });
+        });
+    </script>
+
+<!-- #endregion==>Code dedicate to checkbox -->
+   
+  @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        @if (TempData["ShowAlert"] != null)
+        {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        title: '@ViewBag.title',
+                        text: '@ViewBag.message',
+                        icon: '@ViewBag.icon',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didClose: () => {
+                            window.location.href = '@Url.Action("AddShop", "Home")';
+                        }
+                    });
+                });
+            </script>
+        }
+    }
+}
