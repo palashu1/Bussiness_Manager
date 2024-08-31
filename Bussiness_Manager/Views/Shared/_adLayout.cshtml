@@ -3,68 +3,119 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Business_Manager</title>
+    <title>@ViewData["Title"] - Dashboard Layouts with CSS Grid</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz@0,14..32;1,14..32&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Business_Manager.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
-
-
+    <link rel="stylesheet" href="~/css/site1.css" asp-append-version="true" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+  
+    <header class="header"></header>
 
+    <div class="sidebar">
+        <div class="logo_details">
+            <i class="bx bxl-audible icon"></i>
+            <div class="logo_name">Code Effect</div>
+            <i class="bx bx-menu"></i>
+        </div>
+        <ui class="nav-list">
+            <li>
+                <a href="#">
+                    <i class="bx bx-grid-alt"></i>
+                    <span class="link_name">Dashboard</span>
+                </a>
+                @* <span class="tooltip">Dashboard</span> *@
+            </li>
 
-   
+            <li>
+                <a href="#">
+                    <i class="bx bx-user"></i>
+                    <span class="link_name">User</span>
+                </a>
+                @* <span class="tooltip">User</span> *@
+            </li>
 
-    <div class="content">
-        <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <a class="navbar-brand text-dark" asp-area="" asp-controller="Home" asp-action="Registration">Business Manager Ashu</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <!-- Additional Navbar items can be added here -->
-                        </ul>
-                        <form asp-controller="Home" asp-action="Logout" method="post">
-                            <button id="logoutButton" type="submit" class="btn btn-danger text-black" style="border-radius:2rem;">Logout</button>
-                        </form>
+            <li>
+                <a href="#">
+                    <i class="bx bx-chat"></i>
+                    <span class="link_name">Message</span>
+                </a>
+                @* <span class="tooltip">Message</span> *@
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bx bx-pie-chart-alt-2"></i>
+                    <span class="link_name">Analytics</span>
+                </a>
+                @* <span class="tooltip">Analytics</span> *@
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bx bx-folder"></i>
+                    <span class="link_name">File Manager</span>
+                </a>
+                @* <span class="tooltip">File Manager</span> *@
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bx bx-cart-alt"></i>
+                    <span class="link_name">Order</span>
+                </a>
+                @* <span class="tooltip">Order</span> *@
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bx bx-pie-chart-alt-2"></i>
+                    <span class="link_name">Analytics</span>
+                </a>
+                @* <span class="tooltip">Analytics</span> *@
+            </li>
+
+            <li>
+                <a href="#">
+                    <i class="bx bx-cog"></i>
+                    <span class="link_name">Settings</span>
+                </a>
+                @* <span class="tooltip">Settings</span> *@
+            </li>
+
+            <li class="profile">
+                <img src="#" alt="profile image">
+                <div class="profile_content">
+                    <div class="name">Ashu Pal</div>
+                    <div class="designation">admin</div>
+                </div>
+            </li>
+
+            <li class="profile">
+                <div class="profile_details">
+                    <img src="#" alt="profile image">
+                    <div class="profile_content">
+                        <div class="name">Ashu Pal</div>
+                        <div class="designation">Admin</div>
                     </div>
                 </div>
-            </nav>
-        </header>
-
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-10">
-                    <main role="main" class="pb-3">
-                        @RenderBody()
-                    </main>
-                </div>
-            </div>
-        </div>
+            </li>
+        </ui>
     </div>
 
+    <section class="home-section">
+        <div class="text">Dashboard</div>
+    </section>
 
-
+   
+    <main role="main" class="main">
+        @RenderBody()
+    </main>
+     
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const content = document.querySelector('.content');
-            sidebar.classList.toggle('minimized');
-            content.classList.toggle('shifted');
-        }
-    </script>
 </body>
 </html>
