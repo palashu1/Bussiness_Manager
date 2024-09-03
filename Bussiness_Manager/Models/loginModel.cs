@@ -7,7 +7,9 @@ namespace Bussiness_Manager.Models
         [Required(ErrorMessage = "Mobile no is required.")]
         public string phone {  get; set; }
 
-        [Required(ErrorMessage = "Password is required.")]
+        [Required(ErrorMessage = "Mobile number is required.")]
+        [Phone(ErrorMessage = "Invalid Mobile Number.")]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
         public string password { get; set; }
     }
 }

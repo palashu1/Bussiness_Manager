@@ -25,7 +25,7 @@ body {
 }
 
 .header {
-    background-color: #fff;
+    background-color: #00468B;
     grid-area: header;
 }
 
@@ -311,23 +311,27 @@ body {
 }
 
 
-.main {
+.main{
     background-color: #c3c5ca;
     padding: 25px;
     grid-area: main;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-areas:
+    grid-template-columns: 1fr 1fr ;
+    grid-template-rows: 2fr 1fr ;
+    /*grid-template-areas:
         "c1 c2 c3"
         "c4 c4 c5"
-        "c4 c4 c6";
+        "c4 c4 c6";*/
+    grid-template-areas:
+        "c1 c2"
+        "c3 c4";
     gap: 20px;
 }
 
 
-.card{
-    background-color: #f6f7f9;
+
+.card {
+    background-color: #fff;
     border-radius: 10px;
 }
 
@@ -347,13 +351,14 @@ body {
     grid-area: c4;
 }
 
-.card:nth-child(5) {
+/*.card:nth-child(5) {
     grid-area: c5;
 }
 
 .card:nth-child(6) {
     grid-area: c6;
-}
+}*/
+
 
 
 @media (max-width: 1111px){
@@ -388,6 +393,38 @@ body {
     border: 2px solid #00468B; /* Padding around the thumb */
 }
 
-    .sidebar::-webkit-scrollbar-thumb:hover {
-        background-color: #56A7DE; /* Color when hovering over the scrollbar thumb */
-    }
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: #56A7DE; /* Color when hovering over the scrollbar thumb */
+}
+
+
+
+/*Add Item*/
+
+
+.ca1 {
+    background: linear-gradient(rgba(0,0,0,-0.8), rgba(0,0,0,0.2)),url("/images/Stock.PNG");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.ca2 {
+    background: linear-gradient(rgba(0,0,0,-0.8), rgba(0,0,0,0.2)),url("/images/new.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.ca3 {
+    background: linear-gradient(rgba(0,0,0,-0.8), rgba(0,0,0,0.2)),url("/images/new.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.ca4 {
+    background: linear-gradient(rgba(0,0,0,-0.8), rgba(0,0,0,0.2)),url("/images/new.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+

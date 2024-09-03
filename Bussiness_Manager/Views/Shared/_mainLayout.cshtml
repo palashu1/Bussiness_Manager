@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BillTracker</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz@0,14..32;1,14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bussiness_Manager.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Registration" style="color:blue;font-size:34px;font-style:italic;font-family:fantasy;">BillTracker</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+           
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="Index">
+                                <i class="bx bx-grid-alt"></i>
+                                <span class="link_name">Dashboard</span>
+                            </a>
+                            <span class="tooltip">Dashboard</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AddShop">
+                                <i class="bx bx-store"></i>
+                                <span class="link_name">Add Shop</span>
+                            </a>
+                            <span class="tooltip">Add Shop</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="getShops">
+                                <i class="bx bxs-store"></i>
+                                <span class="link_name">Manage Shop</span>
+                            </a>
+                            <span class="tooltip">Manage Shop</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="addCustomer">
+                                <i class="bx bx-user-plus"></i>
+                                <span class="link_name">Add Customer</span>
+                            </a>
+                            <span class="tooltip">Add Customer</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxs-group"></i>
+                                <span class="link_name">Manage Customer</span>
+                            </a>
+                            <span class="tooltip">Manage Customer</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxl-product-hunt"></i>
+                                <span class="link_name">Add Item</span>
+                            </a>
+                            <span class="tooltip">Add Item</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bx-pie-chart-alt-2"></i>
+                                <span class="link_name">Manage Item</span>
+                            </a>
+                            <span class="tooltip">Manage Item</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxs-doughnut-chart"></i>
+                                <span class="link_name">Manage Stock</span>
+                            </a>
+                            <span class="tooltip">Manage Stock</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bx-bar-chart-alt"></i>
+                                <span class="link_name">Create Sale Invoice</span>
+                            </a>
+                            <span class="tooltip">Create Sale Invoice</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bx-bar-chart"></i>
+                                <span class="link_name">Sale Invoice List</span>
+                            </a>
+                            <span class="tooltip">Sale Invoice List</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxs-credit-card-alt"></i>
+                                <span class="link_name">Payment In</span>
+                            </a>
+                            <span class="tooltip">Payment In</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxs-credit-card-front"></i>
+                                <span class="link_name">Payment In History</span>
+                            </a>
+                            <span class="tooltip">Payment In History</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bxs-report"></i>
+                                <span class="link_name">Report</span>
+                            </a>
+                            <span class="tooltip">Report</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                                <i class="bx bx-log-out"></i>
+                                <span class="link_name">Logout</span>
+                            </a>
+                            <span class="tooltip">Logout</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+   
+     <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+           
+        </div>
+    </div>
+
+   @*  <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - SpendSmart - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer> *@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -17,6 +17,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnectio
 
 //Register services
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<ISelling,SellingService>();
 
 
 #region:: Old JWT token validation code
@@ -103,6 +104,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Login}/{id?}");
+    pattern: "{controller=Selling}/{action=Index}/{id?}");
 
 app.Run();

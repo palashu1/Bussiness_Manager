@@ -207,3 +207,15 @@ input.form-control:not(:placeholder-shown) ~ label {
 }
 
 
+/*Header Link*/
+.nav-link {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #ddd;
+    color: white;
+    border-radius: 5px;
+}
+
+
