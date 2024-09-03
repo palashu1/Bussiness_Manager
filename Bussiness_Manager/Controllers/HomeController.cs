@@ -191,7 +191,6 @@ namespace Bussiness_Manager.Controllers
             return View(model);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             // Remove the JWT token by clearing the cookie

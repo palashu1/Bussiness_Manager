@@ -13,6 +13,8 @@ namespace Bussiness_Manager.Models
         public ShopDetail ShopDetail { get; set; }
         public int customerId { get; set; }
         public Customer Customer { get; set; }
+        [Column(TypeName ="nvarchar(50)")]
+        public string saleInvoiceNo {  get; set; }
         [Column(TypeName ="Decimal(18,2)")]
         public decimal? netAmount { get; set; }
         [Column(TypeName = "Decimal(18,2)")]
@@ -25,6 +27,7 @@ namespace Bussiness_Manager.Models
         public string dstatus {  get; set; }
         public DateTime? createdOn { get; set; }
         public DateTime? updatedOn { get; set; }
+
 
         public ICollection<saleInvoiceDetail> saleInvoiceDetails { get; set; }
     }

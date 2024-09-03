@@ -15,6 +15,8 @@ namespace Bussiness_Manager.Models
         public decimal? netAmount { get; set; }
         [Column(TypeName ="nvarchar(2)")]
         public string dstatus {  get; set; }
+        [Column(TypeName = "nvarchar(50)")]
+        public string saleInvoiceNo { get; set; }
         public DateTime? createdOn { get; set; }
         public DateTime? updatedOn { get; set; }
     }
