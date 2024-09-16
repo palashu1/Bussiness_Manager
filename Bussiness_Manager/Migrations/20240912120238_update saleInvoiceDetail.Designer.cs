@@ -4,6 +4,7 @@ using Bussiness_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bussiness_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContex))]
-    partial class ApplicationDbContexModelSnapshot : ModelSnapshot
+    [Migration("20240912120238_update saleInvoiceDetail")]
+    partial class updatesaleInvoiceDetail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,12 +252,6 @@ namespace Bussiness_Manager.Migrations
                     b.Property<decimal?>("netAmount")
                         .HasColumnType("decimal(18,3)");
 
-                    b.Property<string>("paymentMode")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("paymentNo")
-                        .HasColumnType("int");
-
                     b.Property<int>("saleId")
                         .HasColumnType("int");
 
@@ -263,12 +260,6 @@ namespace Bussiness_Manager.Migrations
 
                     b.Property<decimal?>("totalAmount")
                         .HasColumnType("decimal(18,3)");
-
-                    b.Property<decimal?>("transactionAmount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("transactionModule")
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("updatedOn")
                         .HasColumnType("datetime2");

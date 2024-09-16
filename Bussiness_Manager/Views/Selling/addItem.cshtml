@@ -1,7 +1,190 @@
-﻿@{
+﻿@model Bussiness_Manager.Models.Product
+@{
     ViewData["Title"] = "addItem";
-    Layout = "~/Views/Shared/_adLayout.cshtml";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
 }
+
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class=" fa fa-cubes bx bxl-product-hunt" aria-hidden="true">
+            
+        </i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">
+
+            @if (Model!=null)
+            {
+                <text>EDIT ITEM</text>
+            }
+            else
+            {
+                <text>ADD ITEM</text>
+            }
+        </h3>
+    </div>
+</div>
+<form id="myForm" asp-action="addItemForm" method="post" asp-controller="Selling" class="small-text mt-3">
+    <div class="invoice_form add_customer bg-white mt-4" style="box-shadow:0 2px 10px rgba(0, 0, 0, 0.1);">
+    <div class="product_heading product_heading_buttons">
+        <h3>Product Details</h3>
+    </div>
+    <div class="row mt-4 product_form">
+
+            <input hidden asp-for="productId" type="number" class="form-control" placeholder="0">
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="productName">
+                    Item or Product Name
+                        <span asp-validation-for="productName" class="text-danger"></span>
+                </label>
+                    <input asp-for="productName" type="text" maxlength="490"  class="form-control" placeholder="Enter Item or Product Name">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="productSummary">
+                    Item or Product Short Summary
+                        <span asp-validation-for="productSummary" class="text-danger"></span>
+                </label>
+                @* <input asp-for="productSummary" type="text" maxlength="490" name="productname" class="form-control" placeholder="Enter Item or Product Short Summary"> *@
+                <textarea asp-for="productSummary" maxlength="490" class="form-control" placeholder="Enter Item or Product Short Summary" style="height:21px"></textarea>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="hsnCode">
+                    HSN Code
+                        <span asp-validation-for="hsnCode" class="text-danger"></span>
+                </label>
+                    <input asp-for="hsnCode" type="text" min="0" class="form-control" placeholder="Enter HSN Code">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="unit">
+                    Unit*
+                    <span asp-validation-for="unit" class="text-danger"></span>
+                </label>
+                    <select asp-for="unit" class="form-select">
+                        <option value="">Select Unit</option>
+                        @{
+                           var list = ViewData["Units"] as List<Unit>;
+                           if(list!=null && list.Any())
+                           {
+                              @foreach (var unit in (List<Unit>)ViewData["Units"])
+                              {
+                                  <option value="@unit.unitName">@unit.unitName</option>
+                              }
+                           }
+                        }
+                    </select>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="salePrice">
+                    Sale Price
+                        <span asp-validation-for="salePrice" class="text-danger"></span>
+                </label>
+                    <input asp-for="salePrice" type="number" maxlength="490" class="form-control" placeholder="Enter Sale Price">
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="invoice_form add_customer bg-white mt-4" style="box-shadow:0 2px 10px rgba(0, 0, 0, 0.1);">
+    <div class="product_heading">
+        <h3>Other details</h3>
+    </div>
+    <div class="row mt-4 product_form">
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="brand">
+                    Brand/Company
+                        <span asp-validation-for="brand" class="text-danger"></span>
+                </label>
+                    <input asp-for="brand" type="text" maxlength="90" class="form-control" placeholder="Enter Brand/Company">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="color">
+                    Color
+                        <span asp-validation-for="color" class="text-danger"></span>
+                </label>
+                    <input asp-for="color" type="text" maxlength="90" class="form-control" placeholder="Enter Color">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="size">
+                    Size
+                        <span asp-validation-for="size" class="text-danger"></span>
+                </label>
+                    <input asp-for="size" type="number" maxlength="90" class="form-control" placeholder="Enter Size">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                    <label asp-for="productCode">
+                    Item/Product Code
+                        <span asp-validation-for="productCode" class="text-danger"></span>
+                </label>
+                    <input asp-for="productCode" type="text" maxlength="90" class="form-control" placeholder="Enter Item/Product Code">
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label asp-for="qty">
+                    Stock Quanity
+                    <span asp-validation-for="qty" class="text-danger"></span>
+                </label>
+                    <input asp-for="qty" type="number" min="0" class="form-control" placeholder="Enter Stock Quanity">
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="form_button mt-4 d-block">
+                <button type="submit" class="btn btn-primary me-2">
+                        @if (Model != null)
+                        {
+                            <text>Edit</text>
+                        }else
+                        {
+                            <text>Save</text>
+                        }
+                </button>
+                <a class="btn btn-danger" asp-controller="Selling" asp-action="Index">Cancel</a>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        @if (TempData["ShowAlert"] != null)
+        {
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        title: 'error',
+                        text: '@ViewBag.message',
+                        icon: 'error',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didClose: () => {
+                            window.location.href = '@Url.Action("manageItem", "Selling")';
+                        }
+                    });
+                });
+            </script>
+        }
+        
+    }
+}
+
 
 
 

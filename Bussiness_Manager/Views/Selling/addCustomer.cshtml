@@ -9,7 +9,7 @@
     <div class="row justify-content-center shadow-lg weight" style="background-color:white; border-radius:1rem">
         <div class="col-md-5">
             <h1 class="text-center" style="font-weight:bold">Add Customer</h1>
-            <form asp-action="addCustomer" method="post" class="small-text mt-3">
+            <form asp-action="addCustomer" method="post" class="small-text mt-3">   
 
                 <div class="form-group mb-3">
                     <input asp-for="name" class="form-control Re" type="text" placeholder=" " />
@@ -49,64 +49,5 @@
 
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
-
-        @if (TempData["ShowAlert"] != null)
-        {
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        title: '@ViewBag.title',
-                        text: '@ViewBag.message',
-                        icon: '@ViewBag.icon',
-                        timer: 5000,
-                        timerProgressBar: true,
-                        didClose: () => {
-                            window.location.href = '@Url.Action("Login", "Home")';
-                        }
-                    });
-                });
-            </script>
-        }
-
-        @if (TempData["ShowAlert1"] != null)
-        {
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        title: '@ViewBag.title',
-                        text: '@ViewBag.message',
-                        icon: '@ViewBag.icon',
-                        timer: 5000,
-                        timerProgressBar: true,
-                        didClose: () => {
-                            // Redirect after the alert closes
-                            window.location.href = '@Url.Action("getShops", "Home")';
-                        }
-                    });
-                });
-            </script>
-        }
-
-        @if (TempData["ShowAlert2"] != null)
-        {
-
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        title: '@ViewBag.title',
-                        text: '@ViewBag.message',
-                        icon: '@ViewBag.icon',
-                        timer: 5000,
-                        timerProgressBar: true,
-                        didClose: () => {
-                            // Redirect after the alert closes
-                            window.location.href = '@Url.Action("AddShop", "Home")';
-                        }
-                    });
-                });
-            </script>
-        }
-
     }
 }

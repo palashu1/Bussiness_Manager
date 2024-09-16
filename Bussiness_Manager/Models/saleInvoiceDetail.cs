@@ -11,12 +11,18 @@ namespace Bussiness_Manager.Models
         public saleInvoice SaleInvoice { get; set; }
         public int productId { get; set; }
         public Product Product { get; set; }
+        [Column(TypeName ="decimal(18,3)")]
+        public decimal? qty { get; set; }
+        [Column(TypeName = "decimal(18,3)")]
+        public decimal? price { get; set; }
+        [Column(TypeName = "decimal(18,3)")]
+        public decimal? discount { get; set; }
         [Column(TypeName ="decimal(18,2)")]
         public decimal? netAmount { get; set; }
         [Column(TypeName ="nvarchar(2)")]
         public string dstatus {  get; set; }
-        [Column(TypeName = "nvarchar(50)")]
-        public string saleInvoiceNo { get; set; }
+        //[Column(TypeName = "nvarchar(50)")]
+        //public string saleInvoiceNo { get; set; }
         public DateTime? createdOn { get; set; }
         public DateTime? updatedOn { get; set; }
     }

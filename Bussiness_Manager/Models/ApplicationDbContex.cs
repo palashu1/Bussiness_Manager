@@ -38,6 +38,13 @@ namespace Bussiness_Manager.Models
                 .HasForeignKey(p => p.memberId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Member to Transactions relationship
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.Members)
+                .WithMany(m => m.Transactions)
+                .HasForeignKey(p => p.memberId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // ShopDetails to Product relationship
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ShopDetail)
@@ -59,6 +66,13 @@ namespace Bussiness_Manager.Models
                 .HasForeignKey(p => p.shopId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // ShopDetails to Transactions relationship
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.ShopDetail)
+                .WithMany(sd => sd.Transactions)
+                .HasForeignKey(p => p.shopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Product to saleInvoiceDetail relationship
             modelBuilder.Entity<saleInvoiceDetail>()
                 .HasOne(p => p.Product)
@@ -73,10 +87,24 @@ namespace Bussiness_Manager.Models
                 .HasForeignKey(p => p.customerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Customer to Transactions relationship
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.Customer)
+                .WithMany(sd => sd.Transactions)
+                .HasForeignKey(p => p.customerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // saleInvoice to saleInvoiceDetail relationship
             modelBuilder.Entity<saleInvoiceDetail>()
                 .HasOne(p => p.SaleInvoice)
                 .WithMany(sd => sd.saleInvoiceDetails)
+                .HasForeignKey(p => p.saleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // saleInvoice to Transaction relationship
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.saleInvoice)
+                .WithMany(sd => sd.Transactions)
                 .HasForeignKey(p => p.saleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -91,5 +119,7 @@ namespace Bussiness_Manager.Models
         public DbSet<Customer> customers { get; set; }
         public DbSet<saleInvoice> saleInvoices { get; set; }
         public DbSet<saleInvoiceDetail> saleInvoiceDetails { get; set; }
+        public DbSet<Unit> units { get; set; }
+        public DbSet<Transactions> transactions { get; set; }
     }   
 }

@@ -1,85 +1,69 @@
-﻿@model List<ShopDetail>
-
+﻿@model Bussiness_Manager.Utility.IGenericContainer<List<Bussiness_Manager.Dto.customerDto>>
 @{
-    ViewData["Title"] = "Shops";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "manageCustomer";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
 }
 
 
 <div class="text-center" style="background-color:white; border-radius:1rem;">
-    <h1 class="display-4">Shops</h1>
+    <h1 class="display-4 text-primary">Customers</h1>
     <br />
 
     <form asp-action="updateToken" method="post">
-        <div class="table-wrapper text-center" style="background-color:white; border-radius:1rem;">
+        <div class="Mvr text-center" style="background-color:white; border-radius:1rem;">
 
             <table class="scrollable-table">
                 <thead>
                     <tr>
-                        <th hidden>
-                            Shop Id
+                        <th>
+                            Sno
                         </th>
                         <th>
-                            Name
+                            Customer Name
                         </th>
                         <th>
-                            Bussiness Type
+                            Customer Address
                         </th>
                         <th>
-                            Logo
-                        </th>
-                        <th>
-                            Address
-                        </th>
-                        <th>
-                            Description
+                            Mobile no
                         </th>
                         <th>
                             Creation Date
                         </th>
                         <th>
-                            Choose One
+                            Balance Amount
                         </th>
                         <th>
                             Action
                         </th>
-
                     </tr>
                 </thead>
                 <tbody>
                     @{
-                        foreach (var shop in Model)
+                        int cnt=0;
+                        foreach (var customer in Model.Value)
                         {
+                            cnt = cnt + 1;
                             <tr>
                                 <td>
-                                    @shop.shopId
+                                   @cnt
                                 </td>
                                 <td>
-                                    @shop.shopName
+                                    @customer.name
                                 </td>
                                 <td>
-                                    @shop.bussinessType
+                                    @customer.address
                                 </td>
                                 <td>
-                                    @shop.logo
+                                    @customer.mobileNo
                                 </td>
                                 <td>
-                                    @shop.shopAddress
+                                    @customer.createdOn.Value.ToString("dd/MM/yyyy")
                                 </td>
                                 <td>
-                                    @shop.shopDescription
+                                    @customer.address
                                 </td>
-                                <td>
-                                    @shop.createdOn.Value.ToString("dd/MM/yyyy")
-                                </td>
-                                <td>
-                                    <input type="checkbox"
-                                           class="checkbox-item"
-                                           name="selectedCheckbox"
-                                           value="@shop.shopId"
-                                           onclick="handleCheckboxClick(this)" />
-                                </td>
-
+                            
                                 <td>
                                     <div class="dropdown">
                                         <button class="dropdown-toggle" type="button">
@@ -88,6 +72,7 @@
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item">Edit</a>
                                             <a class="dropdown-item">Delete</a>
+                                            <a class="dropdown-item">Payment In</a>
                                         </div>
                                     </div>
                                 </td>
@@ -100,10 +85,10 @@
         </div>
         <div class="text-lg-end" style=" border-color:black">
             <p class="para"> Total shops : @ViewBag.Shops</p>
-            <button class="btn btn-primary text-white bto" type="submit" id="submitButton" disabled  >Next-></button>
+            <button class="btn btn-primary text-white bto" type="submit" id="submitButton" disabled>Next-></button>
         </div>
     </form>
-    
+
 
 </div>
 
@@ -111,44 +96,7 @@
 
 @section Scripts {
 
-<!-- #Code dedicate to checkbox -->
-
-    <script>
-        function handleCheckboxClick(clickedCheckbox) {
-            var checkboxes = document.getElementsByName('selectedCheckbox');
-
-            checkboxes.forEach(function (checkbox) {
-                if (checkbox !== clickedCheckbox) {
-                    checkbox.checked = false;
-                }
-            });
-        }
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Function to update the submit button state
-            function updateSubmitButtonState() {
-                // Check if any checkbox is checked
-                var anyChecked = $('.checkbox-item:checked').length > 0;
-                if (anyChecked) {
-                    $('#submitButton').prop('disabled', false); // Enable the button
-                } else {
-                    $('#submitButton').prop('disabled', true); // Disable the button
-                }
-            }
-            // Initial check on page load
-            updateSubmitButtonState();
-            // Attach the change event listener to all checkboxes
-            $('.checkbox-item').on('change', function () {
-                updateSubmitButtonState();
-            });
-        });
-    </script>
-
-<!-- #endregion==>Code dedicate to checkbox -->
-   
-  @{
+    @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
 
         @if (TempData["ShowAlert"] != null)

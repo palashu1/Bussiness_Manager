@@ -4,6 +4,7 @@ using Bussiness_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bussiness_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContex))]
-    partial class ApplicationDbContexModelSnapshot : ModelSnapshot
+    [Migration("20240906092437_create table Unit")]
+    partial class createtableUnit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +133,6 @@ namespace Bussiness_Manager.Migrations
                         .HasColumnType("nvarchar(2)");
 
                     b.Property<string>("hsnCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("memberId")
@@ -140,16 +142,15 @@ namespace Bussiness_Manager.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("productName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("productSummary")
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<decimal>("qty")
+                    b.Property<decimal?>("qty")
                         .HasColumnType("Decimal(18,2)");
 
-                    b.Property<decimal>("salePrice")
+                    b.Property<decimal?>("salePrice")
                         .HasColumnType("Decimal(18,2)");
 
                     b.Property<int>("shopId")
@@ -159,7 +160,6 @@ namespace Bussiness_Manager.Migrations
                         .HasColumnType("Decimal(18,3)");
 
                     b.Property<string>("unit")
-                        .IsRequired()
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("updatedOn")
@@ -218,88 +218,6 @@ namespace Bussiness_Manager.Migrations
                     b.HasIndex("memberId");
 
                     b.ToTable("shopDetails");
-                });
-
-            modelBuilder.Entity("Bussiness_Manager.Models.Transactions", b =>
-                {
-                    b.Property<int>("transactionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("transactionId"));
-
-                    b.Property<decimal?>("balanceAmount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<DateTime?>("createdOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("customerId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("discount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("dstatus")
-                        .HasColumnType("nvarchar(2)");
-
-                    b.Property<int>("memberId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("netAmount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("paymentMode")
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("paymentNo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("saleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("shopId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("totalAmount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<decimal?>("transactionAmount")
-                        .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("transactionModule")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("updatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("transactionId");
-
-                    b.HasIndex("customerId");
-
-                    b.HasIndex("memberId");
-
-                    b.HasIndex("saleId");
-
-                    b.HasIndex("shopId");
-
-                    b.ToTable("transactions");
-                });
-
-            modelBuilder.Entity("Bussiness_Manager.Models.Unit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("unitName")
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("units");
                 });
 
             modelBuilder.Entity("Bussiness_Manager.Models.saleInvoice", b =>
@@ -367,9 +285,6 @@ namespace Bussiness_Manager.Migrations
                     b.Property<DateTime?>("createdOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("discount")
-                        .HasColumnType("decimal(18,3)");
-
                     b.Property<string>("dstatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(2)");
@@ -377,17 +292,15 @@ namespace Bussiness_Manager.Migrations
                     b.Property<decimal?>("netAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("price")
-                        .HasColumnType("decimal(18,3)");
-
                     b.Property<int>("productId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("qty")
-                        .HasColumnType("decimal(18,3)");
-
                     b.Property<int>("saleId")
                         .HasColumnType("int");
+
+                    b.Property<string>("saleInvoiceNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("updatedOn")
                         .HasColumnType("datetime2");
@@ -450,41 +363,6 @@ namespace Bussiness_Manager.Migrations
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Bussiness_Manager.Models.Transactions", b =>
-                {
-                    b.HasOne("Bussiness_Manager.Models.Customer", "Customer")
-                        .WithMany("Transactions")
-                        .HasForeignKey("customerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Bussiness_Manager.Models.Members", "Members")
-                        .WithMany("Transactions")
-                        .HasForeignKey("memberId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bussiness_Manager.Models.saleInvoice", "saleInvoice")
-                        .WithMany("Transactions")
-                        .HasForeignKey("saleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Bussiness_Manager.Models.ShopDetail", "ShopDetail")
-                        .WithMany("Transactions")
-                        .HasForeignKey("shopId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Members");
-
-                    b.Navigation("ShopDetail");
-
-                    b.Navigation("saleInvoice");
-                });
-
             modelBuilder.Entity("Bussiness_Manager.Models.saleInvoice", b =>
                 {
                     b.HasOne("Bussiness_Manager.Models.Customer", "Customer")
@@ -533,8 +411,6 @@ namespace Bussiness_Manager.Migrations
 
             modelBuilder.Entity("Bussiness_Manager.Models.Customer", b =>
                 {
-                    b.Navigation("Transactions");
-
                     b.Navigation("saleInvoices");
                 });
 
@@ -545,8 +421,6 @@ namespace Bussiness_Manager.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("ShopDetails");
-
-                    b.Navigation("Transactions");
 
                     b.Navigation("saleInvoices");
                 });
@@ -562,15 +436,11 @@ namespace Bussiness_Manager.Migrations
 
                     b.Navigation("Products");
 
-                    b.Navigation("Transactions");
-
                     b.Navigation("saleInvoices");
                 });
 
             modelBuilder.Entity("Bussiness_Manager.Models.saleInvoice", b =>
                 {
-                    b.Navigation("Transactions");
-
                     b.Navigation("saleInvoiceDetails");
                 });
 #pragma warning restore 612, 618

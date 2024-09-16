@@ -9,6 +9,7 @@ namespace Bussiness_Manager.Dto
         public int customerId { get; set; }
         public int? memberId { get; set; }
         public int? shopId { get; set; }
+        [Required(ErrorMessage = "Required")]
         public string name { get; set; }
         public string address { get; set; }
         public string mobileNo { get; set; }

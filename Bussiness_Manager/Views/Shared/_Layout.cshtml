@@ -11,34 +11,23 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+    <!-- Loader and Overlay HTML -->
+    <div id="loader-overlay">
+        <div class="loader-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-primary border-bottom box-shadow mb-3" style="height:-1px;">
             <div class="container-fluid">
-                @* <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Registration">Welcome</a> *@
                 <p style="color:rgba(255, 255, 255);margin-bottom:0;">WELCOME</p>
-               @*  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button> *@
-               @*  <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">About</a>
-                        </li>
-                    </ul>
-                </div> *@
             </div>
         </nav>
     </header>
-    @* <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div> *@
-
+   
      <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10">
@@ -50,16 +39,40 @@
         </div>
     </div>
 
-   @*  <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - SpendSmart - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
-
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Add JavaScript for Loader -->
+     
+
+    <script>
+        document.onreadystatechange = function () {
+            if (document.readyState === "loading") {
+                showLoader();
+            } else if (document.readyState === "complete") {
+                hideLoader();
+            }
+        };
+
+        function showLoader() {
+            document.getElementById("loader-overlay").style.display = "flex"; // Show overlay and loader
+        }
+
+        function hideLoader() {
+            document.getElementById("loader-overlay").style.display = "none"; // Hide overlay and loader
+        }
+
+        // Show the loader when any form is submitted
+        document.querySelectorAll("form").forEach(function (form) {
+            form.addEventListener("submit", function () {
+                showLoader();
+            });
+        });
+    </script>
+
 </body>
 </html>

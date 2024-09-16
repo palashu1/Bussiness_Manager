@@ -30,5 +30,6 @@ namespace Bussiness_Manager.Models
 
 
         public ICollection<saleInvoiceDetail> saleInvoiceDetails { get; set; }
+        public ICollection<Transactions>? Transactions { get; set; }
     }
 }

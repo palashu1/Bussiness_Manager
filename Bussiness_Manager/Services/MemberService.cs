@@ -201,7 +201,8 @@ namespace Bussiness_Manager.Services
                 {
                     HttpOnly = true,
                     Secure = true,
-                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(30)
                 });
             }
 
@@ -238,9 +239,13 @@ namespace Bussiness_Manager.Services
             {
                 context.Response.Cookies.Append("AuthToken", tokenValue, new CookieOptions
                 {
+                    //HttpOnly = true,
+                    //Secure = true,
+                    //Expires = DateTimeOffset.UtcNow.AddHours(1)
                     HttpOnly = true,
                     Secure = true,
-                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(30)
                 });
             }
 

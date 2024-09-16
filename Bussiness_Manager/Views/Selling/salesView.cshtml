@@ -1,0 +1,139 @@
+﻿@model Bussiness_Manager.Utility.GenericContainer<Bussiness_Manager.Dto.serviceSaleInvoiceDto>
+@{
+    ViewData["Title"] = "saleView";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+}
+
+<div class="table-responsive table_zoom mt-4">
+    <table border="0" cellpadding="0" cellspacing="0" style="width: 76mm; margin: 0px auto; font-family: sans-serif; padding: 0mm 2mm 0mm 0mm">
+        <thead>
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    <h5 style="text-transform: uppercase; font-size: 14px; margin-bottom: 3px; margin-top: 0px; font-weight: 600;">@Model.Value.shopName</h5>
+                    <p style="margin: 0px; font-size: 12px; font-weight: 600;">@Model.Value.shopAddress</p>
+                    <p style="margin: 5px 0px 0px; font-size: 12px; font-weight: 600;">Contact: +91-@Model.Value.memberMobileNo</p>
+                    <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;"></p>
+                    <h5 style="text-transform: uppercase; font-size: 14px; margin-bottom: 5px; margin-top: 12px; border-bottom: 1px dashed rgb(0, 0, 0); padding-bottom: 9px; font-weight: 600;">tax invoice</h5>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="border-bottom: 1px dashed rgb(0, 0, 0);">
+                    <div>
+                        <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;">Bill No.</p>
+                        <p style="margin: 0px 0px 2px; font-size: 12px; font-weight: 600;">
+                            #@Model.Value.saleInvoiceNo
+                        </p>
+                    </div>
+                    <div style="margin-top: 6px;">
+                        <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;">Name</p>
+                        <p style="margin: 0px 0px 2px; font-size: 12px; font-weight: 600;">@Model.Value.customerName</p>
+                    </div>
+                    <div style="margin-top: 6px;">
+                        <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;">Address</p>
+                        <p style="margin: 0px 0px 2px; font-size: 12px; font-weight: 600;">@Model.Value.customerAddress</p>
+                    </div>
+                </td>
+                <td colspan="2" style="text-align: right; border-bottom: 1px dashed rgb(0, 0, 0);">
+                    <div>
+                        <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;">Date</p>
+                        <p style="margin: 0px 0px 2px; font-size: 12px; font-weight: 600;">@Model.Value.createdOn.Value.ToString("dd-MM-yyyy")</p>
+                    </div>
+                    <div style="margin-top: 6px;">
+                        <p style="margin: 0px; font-size: 12px; text-transform: uppercase; font-weight: 600;">Mobile</p>
+                        <p style="margin: 0px 0px 2px; font-size: 12px; font-weight: 600;">
+                            +91-@Model.Value.customerMobileNo
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th style="font-size: 13px; padding: 6px 0px; border-bottom: 1px dashed rgb(0, 0, 0); text-align: left;">Product</th>
+                <th style="font-size: 13px; padding: 6px 0px; border-bottom: 1px dashed rgb(0, 0, 0); text-align: center;">Qty</th>
+                <th style="font-size: 13px; padding: 6px 0px; border-bottom: 1px dashed rgb(0, 0, 0); text-align: center;">MRP</th>
+                @*  <th style="font-size: 13px; padding: 6px 0px; border-bottom: 1px dashed rgb(0, 0, 0); text-align: center;">Discount</th> *@
+                <th style="font-size: 13px; padding: 6px 0px; border-bottom: 1px dashed rgb(0, 0, 0); text-align: right;">Amount</th>
+            </tr>
+            @{
+                @foreach (var product in Model.Value.saleInvoiceDetailDtos)
+                {
+                    <tr>
+                        <td style="font-size: 13px; padding: 4px 0px; text-align: left; font-weight: 600;">
+                            @product.productName
+                            <div style="font-size: 10px;">
+                                (HSN-@product.hsncode)
+                            </div>
+                        </td>
+                        <td style="font-size: 13px; padding: 4px 0px; text-align: center; font-weight: 600;">@product.qty</td>
+                        <td style="font-size: 13px; padding: 4px 0px; text-align: center; font-weight: 600;">@product.price</td>
+                        <td style="font-size: 13px; padding: 4px 0px; text-align: right; font-weight: 600;">
+                            @product.netAmount
+                            <div style="font-size: 10px;">
+                                (Dis-₹@product.discount)
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td colspan="4">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-family: sans-serif; border-top: 1px dashed rgb(0, 0, 0); border-bottom: 1px dashed rgb(0, 0, 0); margin: 6px 0px 0px;">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <p style="margin: 6px 0px 0px; font-size: 12px; font-weight: 600;">SUB TOTAL</p>
+                                <p style="margin: 4px 0px 6px; font-size: 12px; font-weight: 600;">ROUND OFF</p>
+                            </td>
+                            <td style="vertical-align: top; text-align: right;">
+                                <p style="margin: 6px 0px 0px; font-size: 12px; font-weight: 600;">@Model.Value.netAmount</p>
+                                <p style="margin: 4px 0px 6px; font-size: 12px; font-weight: 600;"> @Math.Round(Model.Value.netAmount)</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; font-family: sans-serif; border-bottom: 1px dashed rgb(0, 0, 0); margin: 0px 0px 6px;">
+                        <tr>
+                            <th colspan="3" style="padding: 6px 0px 0px; text-align: left; font-size: 12px;">Payment Details:</th>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: left; font-weight: 600;">Total Amount</td>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: right; font-weight: 600;">@Model.Value.netAmount</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: left; font-weight: 600;">Payment Mode</td>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: right; font-weight: 600;">@Model.Value.paymentMode</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: left; font-weight: 600;">Received Amount</td>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: right; font-weight: 600;">@Model.Value.paymentAmount</td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: left; font-weight: 600;">Balance Amount</td>
+                            <td style="font-size: 13px; padding: 4px 0px; text-align: right; font-weight: 600;">@Model.Value.balanceAmount</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" style="padding-top: 4px;">
+                    <p class="dynamicterms" style="margin: 0px 0px 4px; font-size: 12px; font-weight: 600;">
+                        <p>
+                           <strong>1) Goods Once Sold Will Not Be Taken Back Or Exchanged.</strong>
+                        </p>
+                        <p>
+                            <strong>(2) Seller Is Not Responsible For Any Loss Or Damaged Of Goods In Transits</strong>
+                        </p>
+                        <p>
+                            <strong>3) Disputes If Any Will Be Subject To Seller Court Jurisdiction</strong>
+                        </p>
+                    </p>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

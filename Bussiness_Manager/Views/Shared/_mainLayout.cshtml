@@ -6,16 +6,27 @@
     <title>@ViewData["Title"] - BillTracker</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz@0,14..32;1,14..32&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /> *@
+    <link rel="stylesheet" href="~/css/mainSite.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bussiness_Manager.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+    <!-- Loader HTML -->
+    <div id="loader-overlay">
+        <div class="loader-container">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white box-shadow mb-3" style="border-bottom:solid 2px #09b3ef">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Registration" style="color:blue;font-size:34px;font-style:italic;font-family:fantasy;">BillTracker</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Selling" asp-action="Index" style="color:blue;font-size:34px;font-style:italic;font-family:fantasy;">BillTracker</a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -53,42 +64,42 @@
                             <span class="tooltip">Add Customer</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="manageCustomer">
                                 <i class="bx bxs-group"></i>
                                 <span class="link_name">Manage Customer</span>
                             </a>
                             <span class="tooltip">Manage Customer</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="addItem">
                                 <i class="bx bxl-product-hunt"></i>
                                 <span class="link_name">Add Item</span>
                             </a>
                             <span class="tooltip">Add Item</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="manageItem">
                                 <i class="bx bx-pie-chart-alt-2"></i>
                                 <span class="link_name">Manage Item</span>
                             </a>
                             <span class="tooltip">Manage Item</span>
                         </li>
-                        <li class="nav-item">
+                       @*  <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
                                 <i class="bx bxs-doughnut-chart"></i>
                                 <span class="link_name">Manage Stock</span>
                             </a>
                             <span class="tooltip">Manage Stock</span>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="CreateSaleInvoice">
                                 <i class="bx bx-bar-chart-alt"></i>
                                 <span class="link_name">Create Sale Invoice</span>
                             </a>
                             <span class="tooltip">Create Sale Invoice</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Selling" asp-action="manageSellingInvoice">
                                 <i class="bx bx-bar-chart"></i>
                                 <span class="link_name">Sale Invoice List</span>
                             </a>
@@ -116,7 +127,7 @@
                             <span class="tooltip">Report</span>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Registration">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">
                                 <i class="bx bx-log-out"></i>
                                 <span class="link_name">Logout</span>
                             </a>
@@ -128,7 +139,7 @@
         </nav>
     </header>
    
-     <div class="container mt-5">
+    <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-10">
                 <main role="main" class="pb-3">
@@ -139,16 +150,38 @@
         </div>
     </div>
 
-   @*  <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - SpendSmart - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer> *@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Add JavaScript for Loader -->
+    <script>
+        document.onreadystatechange = function () {
+            var form = document.getElementById("main.myForm");
+            if (document.readyState === "loading") {
+                showLoader();
+            } else if ((document.readyState === "complete") || (!form.checkVisibility() ) {
+                hideLoader();
+            }
+        };
+
+        function showLoader() {
+            document.getElementById("loader-overlay").style.display = "flex"; // Show overlay and loader
+        }
+
+        function hideLoader() {
+            document.getElementById("loader-overlay").style.display = "none"; // Hide overlay and loader
+        }
+
+        // Show the loader when any form is submitted
+        document.querySelectorAll("form").forEach(function (form) {
+            form.addEventListener("submit", function () {
+                showLoader();
+            });
+        });
+    </script>
 </body>
 </html>

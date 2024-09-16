@@ -4,6 +4,7 @@ using Bussiness_Manager.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bussiness_Manager.Migrations
 {
     [DbContext(typeof(ApplicationDbContex))]
-    partial class ApplicationDbContexModelSnapshot : ModelSnapshot
+    [Migration("20240913120045_update Transaction add paymentMode")]
+    partial class updateTransactionaddpaymentMode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,9 +269,6 @@ namespace Bussiness_Manager.Migrations
 
                     b.Property<decimal?>("transactionAmount")
                         .HasColumnType("decimal(18,3)");
-
-                    b.Property<string>("transactionModule")
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime?>("updatedOn")
                         .HasColumnType("datetime2");

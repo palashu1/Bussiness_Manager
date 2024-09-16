@@ -1,4 +1,21 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿if (TempData["ShowAlert"] != null) {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: 'error',
+                text: '@ViewBag.message',
+                icon: 'error',
+                timer: 5000,
+                timerProgressBar: true,
+                didClose: () => {
+                    window.location.href = '@Url.Action("addCustomer", "Selling")';
+                }
+            });
+                });
+    </script>
+}
 
-// Write your JavaScript code.
+
+
+
+

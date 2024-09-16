@@ -1,0 +1,269 @@
+﻿@model Bussiness_Manager.Dto.SaleInvoiceViewModel
+
+@{
+    ViewData["Title"] = Model.SaleInvoice != null ? "Edit Sale Invoice" : "Create Sale Invoice";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+}
+
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class="fa fa-cubes bx bx-bar-chart-alt" aria-hidden="true"></i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">
+            @if (Model.SaleInvoice != null)
+            {
+                <text>EDIT SALE INVOICE</text>
+            }
+            else
+            {
+                <text>CREATE SALE INVOICE</text>
+            }
+        </h3>
+    </div>
+</div>
+
+<form id="myForm" asp-action="CreateSaleInvoice" method="post">
+    <!-- Hidden field to hold SaleInvoice ID for editing -->
+    <input type="hidden" asp-for="SaleInvoice.saleId" />
+
+    <div class="saleForm" style="overflow-x:auto;">
+        <!-- Customer Selection -->
+        <div>
+            <label for="Customer">Select Customer <text style="color:red">*</text></label>
+            <select asp-for="SaleInvoice.customerId" asp-items="@(new SelectList(Model.Customers, "customerId", "name"))">
+                <option value="">-- Select Customer --</option>
+            </select>
+        </div>
+
+        <!-- Sale Invoice Number -->
+        <div>
+            <label for="saleInvoiceNo">Invoice Number <text style="color:red">*</text></label>
+            <input asp-for="SaleInvoice.saleInvoiceNo" type="text" />
+        </div>
+
+        <!-- Products Selection -->
+        <div id="products-container">
+            <label for="Products">Select Products</label>
+            <div id="product-list">
+                @for (int i = 0; i < Model.SaleInvoiceList.Count; i++)
+                {
+                    <div class="product-item" id="product-item-@i">
+
+                        <select name="@Model.SaleInvoiceList[i].productId" class="form-control product-select" data-index="@i">
+                            @foreach (var product in Model.Products)
+                            {
+                                //var isSelected = product.productId == Model.SaleInvoiceList[i].productId ? "selected" : "";
+                                @if (product.productId == Model.SaleInvoiceList[i].productId){
+                                <option value="@product.productId" data-price="@product.salePrice" selected>
+                                    @product.productName - ₹@product.salePrice
+                                </option>
+                                }
+                            }
+                        </select>
+                        <input asp-for="SaleInvoiceList[i].qty" type="number" name="SaleInvoiceList[@i].qty" value="@Model.SaleInvoiceList[i].qty" placeholder="Quantity" class="form-control product-qty" data-index="@i" /> 
+                        <input asp-for="SaleInvoiceList[i].discount" type="number" name="SaleInvoiceList[@i].discount" value="@Model.SaleInvoiceList[i].discount" placeholder="Discount(₹)" class="form-control product-discount" data-index="@i" />
+                        <div class="product-total" id="product-total-@i" style="margin-top:auto;">₹@(Model.SaleInvoiceList[@i].qty * (Model.Products.Where(w => w.productId == Model.SaleInvoiceList[@i].productId).Select(s => s.salePrice).FirstOrDefault()) - Model.SaleInvoiceList[@i].discount)</div>
+                        <button type="button" class="btn btn-danger delete-btn" data-index="@i" style="background:transparent; width:auto;">❌</button>
+                    </div> 
+                }
+            </div>
+            <a id="add-product-btn" class="add_item_new">
+                Add Item
+                <img src="/images/add-items.png" alt />
+            </a>
+        </div>
+    </div>
+
+    <div class="saleForm">
+        <div class="sellTransaction">
+            <div style="width:100%">
+                <label>Mode of Payment <text style="color:red">*</text></label>
+                <select asp-for="SaleInvoice.paymentMode" asp-items="@(new SelectList(Model.paymentModes, "id", "paymentMode"))">
+                    <option value="">Select Payment Mode</option>
+                </select>
+            </div>
+            <div style="width:100%">
+                <label for="paymentAmount">Amount</label>
+                <input asp-for="SaleInvoice.paymentAmount" type="number" value="@Model.SaleInvoice.paymentAmount" />
+            </div>
+        </div>
+        <!-- Overall Total Amount -->
+        <div class="total_amount_show_words d-flex align-items-center justify-content-between mt-3">
+            <p>Total Amount:</p>
+            <p asp-for="SaleInvoice.netAmount" id="overall-total">₹@Model.SaleInvoice.netAmount</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div style="text-align:right">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+   
+</form>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        let productIndex = @Model.SaleInvoiceList.Count; // Track the number of product rows
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add event listener to all delete buttons
+            document.querySelectorAll('.delete-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    // Get the index of the current product item to delete
+                    var index = btn.getAttribute('data-index');
+                    var productDiv = document.getElementById('product-item-' + index);
+
+                    // Remove the product div
+                    productDiv.remove();
+
+                    // Recalculate the overall total
+                    calculateOverallTotal();
+                });
+            });
+        });
+
+        // Function to calculate total for a row
+        function calculateRowTotal(index) {
+            const selectElement = document.querySelector(`select[data-index="${index}"]`);
+            const qtyElement = document.querySelector(`input[data-index="${index}"].product-qty`);
+            const discountElement = document.querySelector(`input[data-index="${index}"].product-discount`);
+            const totalElement = document.getElementById(`product-total-${index}`);
+
+            const salePrice = parseFloat(selectElement.options[selectElement.selectedIndex].getAttribute('data-price'));
+            const quantity = parseFloat(qtyElement.value) || 0;
+            const discount = parseFloat(discountElement.value) || 0;
+
+            const rowTotal = ((salePrice * quantity) - discount);
+            totalElement.textContent = `₹${rowTotal.toFixed(2)}`;
+
+            
+
+            
+
+            calculateOverallTotal();
+        }
+
+        // Function to calculate overall total
+        function calculateOverallTotal() {
+            let overallTotal = 0;
+            document.querySelectorAll('.product-total').forEach(function (totalDiv) {
+                const rowTotalText = totalDiv.textContent.match(/₹(\d+(\.\d+)?)/);
+                if (rowTotalText) {
+                    overallTotal += parseFloat(rowTotalText[1]);
+                }
+            });
+            document.getElementById('overall-total').textContent = `₹${overallTotal.toFixed(2)}`;
+        }
+
+        // Function to attach event listeners to new and existing rows
+        function attachListeners(index) {
+            const productSelect = document.querySelector(`select[data-index="${index}"]`);
+            const productQty = document.querySelector(`input[data-index="${index}"].product-qty`);
+            const productDiscount = document.querySelector(`input[data-index="${index}"].product-discount`);
+            // const otherDiscount = document.querySelector(`input[data-index="${index}"].other-discount`);
+
+            productSelect.addEventListener('change', function () {
+                calculateRowTotal(index);
+            });
+
+            productQty.addEventListener('input', function () {
+                calculateRowTotal(index);
+            });
+
+            productDiscount.addEventListener('input', function () {
+                calculateRowTotal(index);
+            });
+            // otherDiscount.addEventListener('input', function () {
+            //     calculateRowTotal(index);
+            // });
+            
+        }
+
+        // Add product row button event
+        document.getElementById('add-product-btn').addEventListener('click', function () {
+            const productContainer = document.getElementById('product-list');
+
+            // Create a new div for the product row
+            const newProductDiv = document.createElement('div');
+            newProductDiv.classList.add('product-item');
+            newProductDiv.id = `product-item-${productIndex}`; // Assign unique ID for the new row
+
+            // Create the select dropdown for products
+            const productSelect = document.createElement('select');
+            productSelect.name = `SaleInvoiceList[${productIndex}].productId`;
+            productSelect.classList.add('form-control', 'product-select');
+            productSelect.setAttribute('data-index', productIndex);
+            productSelect.innerHTML = `@foreach (var product in Model.Products)
+        {
+                                                                                        <option value="@product.productId" data-price="@product.salePrice">
+                @product.productName - ₹@product.salePrice
+                                                                                        </option>
+        }`;
+
+            // Create an input field for quantity
+            const productQty = document.createElement('input');
+            productQty.type = 'number';
+            productQty.name = `SaleInvoiceList[${productIndex}].qty`;
+            productQty.placeholder = 'Quantity';
+            productQty.classList.add('form-control', 'product-qty');
+            productQty.setAttribute('data-index', productIndex);
+
+            // Create an input field for discount
+            const productDiscount = document.createElement('input');
+            productDiscount.type = 'number';
+            productDiscount.name = `SaleInvoiceList[${productIndex}].discount`;
+            productDiscount.placeholder = 'Discount(₹)';
+            productDiscount.classList.add('form-control', 'product-discount');
+            productDiscount.setAttribute('data-index', productIndex);
+
+            // Create a div to show total for this row
+            const totalDiv = document.createElement('div');
+            totalDiv.classList.add('product-total');
+            totalDiv.id = `product-total-${productIndex}`;
+            totalDiv.textContent = 'Total: ₹0';
+
+            // Create a delete button for the row
+            const deleteBtn = document.createElement('button');
+            deleteBtn.classList.add('btn', 'btn-danger');
+            deleteBtn.innerHTML = '❌';
+            deleteBtn.addEventListener('click', function () {
+                newProductDiv.remove();
+                calculateOverallTotal(); // Recalculate overall total when row is deleted
+            });
+
+            // Append elements to the new product div
+            newProductDiv.appendChild(productSelect);
+            newProductDiv.appendChild(productQty);
+            newProductDiv.appendChild(productDiscount);
+            newProductDiv.appendChild(totalDiv);
+            newProductDiv.appendChild(deleteBtn);
+
+            // Append the new product div to the product container
+            productContainer.appendChild(newProductDiv);
+
+            // Attach event listeners for the new row
+            attachListeners(productIndex);
+
+            productIndex++;
+        });
+
+        // Attach event listeners for the first product row
+      
+        attachListeners(0);
+        attachListeners(1);
+        attachListeners(2);
+        attachListeners(3);
+        attachListeners(4);
+        attachListeners(5);
+    </script>
+
+}

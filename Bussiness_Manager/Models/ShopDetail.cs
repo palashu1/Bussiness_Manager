@@ -37,5 +37,6 @@ namespace Bussiness_Manager.Models
         public ICollection<Product>? Products { get; set; }
         public ICollection<Customer>? Customers { get; set; }
         public ICollection<saleInvoice>? saleInvoices { get; set; }
+        public ICollection<Transactions>? Transactions { get; set; }
     }
 }
