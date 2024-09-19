@@ -1,0 +1,75 @@
+﻿@model Bussiness_Manager.Utility.IGenericContainer<Bussiness_Manager.Dto.paymentInHistoryDto>
+@{
+    ViewData["Title"] = "paymentReceipt";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+}
+
+
+    <div class="container1">
+        <div class="invoice-header">
+            <h3 style="font-size: 20px; font-weight: 700; padding: 0px; margin: 0px;">Payment Receipt</h3>
+        </div>
+        <div class="invoice-details">
+            <table style="width: 100%; table-layout: fixed;">
+                <thead>
+                    <tr>
+                        <td colspan="2" style="background-color: rgb(255, 255, 255);">
+                            <div style="display: inline-block;">
+                                <div style="display: flex; justify-content: center; align-items: center; width: 59px; height: 50px; background-color: #00468B; border-radius: 50%; color: white; font-size: 36px; font-weight: bold;">
+                                    @Model.Value.logo
+                                </div>
+                                <h5 style="text-align: center; font-weight: 700; font-size: 17px;">@Model.Value.shopName</h5>
+                                <p style="text-align: unset; font-size: 14px; padding: 5px; margin: 0px; line-height: 10px;">
+                                    Phone No: @Model.Value.memberMobileNo
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody style="border: 5px black;">
+                    <tr>
+                        <td style="background-color: rgb(143, 187, 227); color: rgb(0, 0, 0); border: 1px solid rgb(0, 0, 0); text-align: center; font-size: 16px;">
+                            <h6>Received From</h6>
+                        </td>
+                        <td style="background-color: rgb(143, 187, 227); color: rgb(0, 0, 0); border: 1px solid rgb(0, 0, 0); text-align: end;">
+                            <h6>Receipt Details</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%;">
+                            <h6 style="font-size: 17px; font-weight: 600; padding: 0px;">@Model.Value.customerName</h6>
+                            <p style="font-size: 14px; padding: 5px 0px 0px; margin: 0px;">
+                                Contact No: @Model.Value.customerMobileNo
+                            </p>
+                        </td>
+                        <td style="vertical-align: super;">
+                            <p style="font-size: 14px; padding: 5px 0px 0px; margin: 0px; text-align: right;">Receipt No: @Model.Value.paymentNo</p>
+                            <p style="font-size: 14px; padding: 5px 0px 0px; margin: 0px; text-align: right;">Date: @Model.Value.transactionDateView.ToString("dd/MM/yyyy")</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: rgb(143, 187, 227); color: rgb(0, 0, 0);">
+                        <h4 style="font-size: 16px; padding: 0px; margin: 0px; text-align: center;">Amount Details</h4>
+                    </td>
+                        <td rowspan="2" style="border-bottom: 1px solid rgb(0, 0, 0);"></td>
+                    </tr>
+                    <tr>
+                        <td style="align-content: start;">
+                            <div style="display: flex; justify-content: space-between; padding-top: 10px;">
+                                <h6 style="font-size: 16px; padding: 0px; margin: 0px;">Received Amount</h6>
+                                <h6 style="font-size: 16px; padding: 0px; margin: 0px;">Rs. @Model.Value.paidAmount</h6>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 10px;">
+                                <h6 style="font-size: 16px; padding: 0px; margin: 0px;">Amount in Words</h6>
+                                <h6 style="font-size: 16px; padding: 0px; margin: 0px;">@Model.Value.amountInWords</h6>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-top: 10px;">
+                               <h6 style="font-size: 16px; padding: 0px; margin: 0px;">Payment Mode</h6>
+                               <h6 style="font-size: 16px; padding: 0px; margin: 0px;">@Model.Value.paymentMode</h6>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>

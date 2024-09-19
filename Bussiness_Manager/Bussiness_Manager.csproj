@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Selling\manageCustomer.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Selling\paymentInHistory.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,10 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Selling\paymentInHistory.cshtml" />
   </ItemGroup>
 
 </Project>

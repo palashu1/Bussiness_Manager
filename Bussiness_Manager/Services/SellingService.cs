@@ -265,7 +265,7 @@ namespace Bussiness_Manager.Services
                         var saleInvoice = await _context.saleInvoices.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.saleId == dto.saleId && w.dstatus == "V").FirstOrDefaultAsync();
                         saleInvoice.memberId=dto.memberId;
                         saleInvoice.shopId = dto.shopId;
-                        saleInvoice.saleInvoiceNo = dto.saleInvoiceNo;
+                        saleInvoice.saleInvoiceNo = saleInvoice.saleInvoiceNo == dto.saleInvoiceNo ? dto.saleInvoiceNo : autoGenerateSaleInvoiceNo(dto.memberId, dto.shopId, dto.saleInvoiceNo);
                         saleInvoice.customerId = dto.customerId;
                         saleInvoice.discount = dto.saleInvoiceDetailDtos.Sum(s => s.discount);
                         saleInvoice.totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos);
@@ -276,11 +276,69 @@ namespace Bussiness_Manager.Services
                         _context.saleInvoices.Update(saleInvoice);
                         save=await _context.SaveChangesAsync();
                         if (save > 0)
-                        {
-                            foreach(var saleDetail in dto.saleInvoiceDetailDtos)
+                        { 
+                            var previousSaleInvoiceDetail = await _context.saleInvoiceDetails.Where(w => w.saleId == dto.saleId && w.dstatus == "V").ToListAsync();
+                            foreach (var saleDetail in previousSaleInvoiceDetail)
                             {
-
+                               var product=await _context.products.Where(w=>w.productId==saleDetail.productId).FirstOrDefaultAsync();
+                                product.qty = (decimal)(product.qty + saleDetail.qty);
+                                _context.products.Update(product);
                             }
+                            await _context.SaveChangesAsync();
+                            _context.saleInvoiceDetails.RemoveRange(previousSaleInvoiceDetail);
+                            await _context.SaveChangesAsync();
+
+                            if (dto.saleInvoiceDetailDtos != null && dto.saleInvoiceDetailDtos.Any())
+                            {
+                                foreach (var saleDetail in dto.saleInvoiceDetailDtos)
+                                {
+                                    var product = await _context.products.Where(w => w.productId == saleDetail.productId && w.dstatus == "V").FirstOrDefaultAsync();
+                                    if (product != null)
+                                    {
+                                        product.qty = (decimal)(product.qty - saleDetail.qty);
+                                        _context.products.Update(product);
+                                        await _context.SaveChangesAsync();
+                                        saleInvoiceDetail saleInvoiceDetail = new saleInvoiceDetail()
+                                        {
+                                            saleId=dto.saleId,
+                                            productId = saleDetail.productId,
+                                            qty = saleDetail.qty,
+                                            discount = saleDetail.discount ?? 0,
+                                            price = calculatePrice(saleDetail.productId, saleDetail.qty),
+                                            netAmount = (calculatePrice(saleDetail.productId, saleDetail.qty)) - (saleDetail.discount ?? 0),
+                                            dstatus = "V",
+                                            createdOn = indiaTimeZone.DateTimeIndia(),
+                                            updatedOn = indiaTimeZone.DateTimeIndia()
+                                        };
+                                        _context.saleInvoiceDetails.Add(saleInvoiceDetail);
+                                    }
+                                }
+                                await _context.SaveChangesAsync();
+                                var transaction = await _context.transactions.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.saleId == dto.saleId && (w.transactionModule == "CreateInvoice" || w.transactionModule == "UpdateInvoice")).FirstOrDefaultAsync();
+                                transaction.customerId = dto.customerId;
+                                transaction.saleId = dto.saleId;
+                                transaction.totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos);
+                                transaction.discount = dto.saleInvoiceDetailDtos.Sum(s => s.discount);
+                                transaction.netAmount = (calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount));
+                                transaction.balanceAmount = ((calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount))) - (dto.paymentAmount ?? 0);
+                                transaction.transactionAmount = dto.paymentAmount ?? 0;
+                                transaction.paymentMode = dto.paymentMode;
+                                transaction.transactionModule = "UpdateInvoice";
+                                transaction.updatedOn = indiaTimeZone.DateTimeIndia();
+                                _context.transactions.Update(transaction);
+                                await _context.SaveChangesAsync();
+
+                                result.IsSuccessful = true;
+                                result.status = "update successfully";
+                                result.Value = dto.saleId.ToString();
+                            }
+                            else
+                            {
+                                result.IsSuccessful = false;
+                                result.status = "failed";
+                                return result;
+                            }
+
                         }
                         scope.Complete();
                     }
@@ -316,7 +374,7 @@ namespace Bussiness_Manager.Services
                                 await _context.SaveChangesAsync();
                                 saleInvoiceDetail saleInvoiceDetail = new saleInvoiceDetail()
                                 {
-                                    saleId = saleId,
+                                    saleId=saleDetail.saleId,
                                     productId = saleDetail.productId,
                                     qty = saleDetail.qty,
                                     discount = saleDetail.discount ?? 0,
@@ -329,40 +387,39 @@ namespace Bussiness_Manager.Services
                                 _context.saleInvoiceDetails.Add(saleInvoiceDetail);
                             }
                             save = await _context.SaveChangesAsync();
-                        }
-                        else
-                        {
-                            result.IsSuccessful = false;
-                            result.status = "failed";
-                        }
-
-                        if (save > 0)
-                        {
-                            Transactions transactions = new Transactions()
+                            if (save > 0)
                             {
-                                memberId = dto.memberId,
-                                shopId = dto.shopId,
-                                customerId = dto.customerId,
-                                saleId = saleId,
-                                paymentNo = autoGeneratePaymentNo(dto.memberId, dto.shopId, dto.customerId, saleId),
-                                transactionAmount = dto.paymentAmount ?? 0,
-                                paymentMode = dto.paymentMode,
-                                totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos),
-                                transactionModule = "CreateInvoice",
-                                discount = dto.saleInvoiceDetailDtos.Sum(s => s.discount),
-                                netAmount = (calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount)),
-                                balanceAmount = ((calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount))) - (dto.paymentAmount ?? 0),
-                                dstatus = "V",
-                                createdOn = indiaTimeZone.DateTimeIndia(),
-                                updatedOn = indiaTimeZone.DateTimeIndia(),
-                            };
-                            _context.transactions.Add(transactions);
-                            save += await _context.SaveChangesAsync();
-                            if (save > 1)
+                                Transactions transactions = new Transactions()
+                                {
+                                    memberId = dto.memberId,
+                                    shopId = dto.shopId,
+                                    customerId = dto.customerId,
+                                    saleId = saleId,
+                                    paymentNo = autoGeneratePaymentNo(dto.memberId, dto.shopId, dto.customerId, saleId),
+                                    transactionAmount = dto.paymentAmount ?? 0,
+                                    paymentMode = dto.paymentMode,
+                                    totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos),
+                                    transactionModule = "CreateInvoice",
+                                    discount = dto.saleInvoiceDetailDtos.Sum(s => s.discount),
+                                    netAmount = (calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount)),
+                                    balanceAmount = ((calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount))) - (dto.paymentAmount ?? 0),
+                                    dstatus = "V",
+                                    createdOn = indiaTimeZone.DateTimeIndia(),
+                                    updatedOn = indiaTimeZone.DateTimeIndia(),
+                                };
+                                _context.transactions.Add(transactions);
+                                save += await _context.SaveChangesAsync();
+                                if (save > 1)
+                                {
+                                    result.IsSuccessful = true;
+                                    result.status = "Success";
+                                    result.Value = saleId.ToString();
+                                }
+                            }
+                            else
                             {
-                                result.IsSuccessful = true;
-                                result.status = "Success";
-                                result.Value = saleId.ToString();
+                                result.IsSuccessful = false;
+                                result.status = "failed";
                             }
                         }
                         else
@@ -370,6 +427,8 @@ namespace Bussiness_Manager.Services
                             result.IsSuccessful = false;
                             result.status = "failed";
                         }
+
+                       
                         scope.Complete();
                     }
                 }
@@ -508,7 +567,6 @@ namespace Bussiness_Manager.Services
             }
             return result;
         }
-
         public async Task<GenericContainer<List<saleInvoiceListDto>>> manageSales(int memberId, int shopId)
         {
             GenericContainer<List<saleInvoiceListDto>> result=new GenericContainer<List<saleInvoiceListDto>>();
@@ -544,6 +602,77 @@ namespace Bussiness_Manager.Services
             }catch(Exception ex)
             {
                 result.IsSuccessful=false;
+                result.status = "Server error";
+            }
+            return result;
+        }
+        public async Task<GenericContainer<List<paymentInHistoryDto>>> paymentInHistoryList(int memberId, int shopId)
+        {
+            GenericContainer<List<paymentInHistoryDto>> result = new GenericContainer<List<paymentInHistoryDto>>();
+            try
+            {
+                var data = await _context.transactions.Include(i => i.saleInvoice).Include(c => c.Customer).AsNoTracking().Where(w => w.memberId == memberId && w.shopId == shopId && w.dstatus == "V").Select(s => new paymentInHistoryDto()
+                {
+                    memberId = memberId,
+                    shopId = shopId,
+                    saleId = s.saleId,
+                    saleInvoiceNo = s.saleInvoice.saleInvoiceNo,
+                    transactionId = s.transactionId,
+                    transactionDate = s.createdOn,
+                    customerId = s.customerId,
+                    customerName = s.Customer.name,
+                    netAmount = s.netAmount,
+                    paidAmount = s.transactionAmount,
+                    balanceAmount = s.balanceAmount,
+                    paymentNo = s.paymentNo,
+                    paymentMode = s.paymentMode,
+                    transactionModule = s.transactionModule,
+                    dstatus = s.dstatus,
+                    createdOn = s.createdOn,
+                    updatedOn = s.updatedOn,
+                }).OrderByDescending(o => o.updatedOn).ToListAsync();
+
+                result.IsSuccessful = true;
+                result.status = "paymentInHistoryList";
+                result.Value = data;
+            }
+            catch (Exception ex) 
+            {
+                result.IsSuccessful = false;
+                result.status = "Server error";
+            }
+            return result;
+        }
+        public async Task<GenericContainer<paymentInHistoryDto>> paymentView(int memberId, int shopId, int transactionId)
+        {
+            GenericContainer<paymentInHistoryDto> result = new GenericContainer<paymentInHistoryDto>();
+            try
+            {
+                var data = await _context.transactions.Include(i => i.Members).Include(i => i.Customer).AsNoTracking().Where(w => w.memberId == memberId && w.shopId == shopId && w.transactionId == transactionId && w.dstatus == "V").Select(s => new paymentInHistoryDto()
+                {
+                    memberId = memberId,
+                    shopId = shopId,
+                    saleId = s.saleId,
+                    memberMobileNo = s.Members.phone,
+                    shopName = s.ShopDetail.shopName,
+                    transactionId = transactionId,
+                    transactionDateView = (DateTime)s.createdOn,
+                    customerName = s.Customer.name,
+                    customerMobileNo = s.Customer.mobileNo,
+                    netAmount = s.netAmount,
+                    paidAmount = s.transactionAmount,
+                    amountInWords = Helper.ConvertNumberToWords(Convert.ToInt32(s.transactionAmount)) + " " + "Rupees Only.",
+                    paymentNo = s.paymentNo,
+                    paymentMode = s.paymentMode,
+                    logo=Helper.GetInitials(s.ShopDetail.shopName),
+                    dstatus = s.dstatus
+                }).FirstOrDefaultAsync();
+                result.status = "receiptView";
+                result.Value = data;
+            }
+            catch (Exception ex)
+            {
+                result.IsSuccessful = false;
                 result.status = "Server error";
             }
             return result;

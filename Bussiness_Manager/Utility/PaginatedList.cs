@@ -29,5 +29,12 @@
             var items = source.Value.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
+
+        public static PaginatedList<T> paymentInHistoryPagination(IGenericContainer<List<T>> source, int pageIndex, int pageSize)
+        {
+            var count = source.Value.Count();
+            var items = source.Value.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
     }
 }

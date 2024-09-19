@@ -1,0 +1,107 @@
+﻿@model Bussiness_Manager.Utility.PaginatedList<Bussiness_Manager.Dto.paymentInHistoryDto>
+
+@{
+    ViewData["Title"] = "paymentInHistory";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+}
+
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class=" fa fa-cubes bx bxs-credit-card-front" aria-hidden="true"></i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">PAYMENT IN HISTORY</h3>
+    </div>
+</div>
+<div class="Manage_items invoice_form add_customer bg-white mt-4" style="box-shadow:0 2px 10px rgba(0, 0, 0, 0.1);>
+    <div class="Items">
+        <div class="manage_items">
+            <div class="add_button add_stock manage_item-button">
+                <form method="get" asp-action="paymentInHistory">
+                    <div class="d-lg-flex magn_search align-items-center">
+                        <div class="input-form me-3">
+                            <img src="/images/manage Search Icon.png" class="img-fluid" alt id="exampleFormControlInput1">
+                            <input type="text" class="form-control" placeholder="Search Here..." name="searchString" value="@ViewBag.SearchString">
+                        </div>
+                        <div class="select_choose">
+                            <div class="btn-group">
+                                <button class="resB btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="position-relative">
+                <div class="table-responsive manage_list_item">
+                    <table class="table man_lis_it">
+                        <thead class="bg-grey">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Invoice No</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Transaction Date</th>
+                                <th scope="col">Net Amount</th>
+                                <th scope="col">Paid Amount</th>
+                                <th scope="col">Balance Amount</th>
+
+                                <th scope="col" width="129px"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        @{
+                            int cnt = 0;
+                            @foreach (var payment in Model.Items)
+                            {
+                                cnt++;
+                                    <tr>
+                                        <td class="top">@cnt</td>
+                                        <td class="top">@payment.saleInvoiceNo</td>
+                                        <td class="top">@payment.customerName</td>
+                                        <td class="top">@payment.createdOn.Value.ToString("dd-MM-yyyy")</td>
+                                        <td class="top">@payment.netAmount</td>
+                                        <td class="top">@payment.paidAmount</td>
+                                        <td class="top">@payment.balanceAmount</td>
+                                        <td class="table_button d-flex align-items-center justify-content-end">
+                                            <a class="btn btn-primary btn-sm me-2" asp-action="paymentReceipt" asp-route-transactionId="@payment.transactionId">View</a>
+                                        </td>
+                                    </tr>
+                            }
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div>
+                    <nav>
+                        <ul class="pagination" style="margin-top:revert;">
+                        @if (Model.HasPreviousPage)
+                        {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+                                </li>
+                        }
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@i">@i</a>
+                                </li>
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+                                </li>
+                        }
+                        </ul>
+                    </nav>
+                </div>
+                <!-- Pagination Controls -->
+
+            </div>
+        </div>
+    </div>
+</div>

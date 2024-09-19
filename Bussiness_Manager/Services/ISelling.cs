@@ -12,5 +12,7 @@ namespace Bussiness_Manager.Services
         Task<GenericContainer<string>> createUpdateSellingInvoice(serviceSaleInvoiceDto dto);
         Task<GenericContainer<serviceSaleInvoiceDto>> getSalesView(int memberId, int shopId, int saleId);
         Task<GenericContainer<List<saleInvoiceListDto>>>manageSales(int memberId, int shopId);
+        Task<GenericContainer<List<paymentInHistoryDto>>> paymentInHistoryList(int memberId, int shopId);
+        Task<GenericContainer<paymentInHistoryDto>> paymentView(int memberId, int shopId, int transactionId);
     }
 }

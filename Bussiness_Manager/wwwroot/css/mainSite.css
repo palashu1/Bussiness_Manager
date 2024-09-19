@@ -693,12 +693,13 @@ img, svg {
 /*Selling*/
 /* General form styling */
 .saleForm {
-    max-width: 900px;
+    /*max-width: 900px;*/
     margin: 20px auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    /*background-color: #f9f9f9;*/
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border:solid 1px #aaa;
 }
 
 .saleForm div {
@@ -860,4 +861,121 @@ p {
     font-size: 10px;
     line-height: 12px;
     margin-bottom: 0;
+}
+
+
+
+
+
+
+
+/*Receipt View*/
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container {
+    border-radius: 0;
+   /* box-shadow: 0 0 8px #ccc;*/
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+}
+
+.container1 {
+    border-radius: 0;
+    box-shadow: 0 0 8px #ccc;
+    margin: 20px auto;
+    max-width: 925px;
+    padding: 20px;
+}
+
+@media (min-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm, .container-xl {
+        max-width: 1140px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container, .container-lg, .container-md, .container-sm {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container, .container-md, .container-sm {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 576px) {
+    .container, .container-sm {
+        max-width: 540px;
+    }
+}
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    width: 100%;
+    padding-right: var(--bs-gutter-x, .75rem);
+    padding-left: var(--bs-gutter-x, .75rem);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.invoice-details, .invoice-header {
+    margin-bottom: 20px;
+}
+
+.invoice-header {
+    text-align: center;
+}
+
+.invoice-details table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+
+.invoice-details td, .invoice-details th {
+    border: 1px solid #121010;
+    padding-left: 8px;
+    padding-right: 5px;
+    text-align: left;
 }

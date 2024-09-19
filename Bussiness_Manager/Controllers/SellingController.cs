@@ -198,7 +198,6 @@ namespace Bussiness_Manager.Controllers
             };
             return View(model);
         }
-        
         [HttpPost]
         public async Task<IActionResult> CreateSaleInvoice(SaleInvoiceViewModel model)
         {
@@ -316,6 +315,34 @@ namespace Bussiness_Manager.Controllers
                paymentModes=paymentModes
             }).FirstOrDefaultAsync();
             return View(model);
+        }
+        public async Task<IActionResult> paymentInHistory(string searchString, int? pageNumber)
+        {
+            IGenericContainer<List<paymentInHistoryDto>> result=new GenericContainer<List<paymentInHistoryDto>>();
+            int pageSize = 10;
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            result = await _selling.paymentInHistoryList(Convert.ToInt32(memberId), Convert.ToInt32(shopId));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                result.Value = result.Value.Where(s => s.saleInvoiceNo.Contains(searchString)
+                                                       || s.transactionDate.ToString().Contains(searchString)
+                                                       || s.customerName.ToLower().ToString().Contains(searchString)
+                                                       || s.netAmount.ToString().Contains(searchString)
+                                                       || s.paidAmount.ToString().Contains(searchString)
+                                                       || s.balanceAmount.ToString().Contains(searchString)
+                                                       || s.paymentNo.ToString().Contains(searchString)).ToList();
+            }
+            var paginatedList = PaginatedList<paymentInHistoryDto>.paymentInHistoryPagination(result, pageNumber ?? 1, pageSize);
+            return View(paginatedList);
+        }
+        public async Task<IActionResult> paymentReceipt(int transactionId)
+        {
+            IGenericContainer<paymentInHistoryDto> result = new GenericContainer<paymentInHistoryDto>();
+            var memberId=Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId=Helper.GetShopIdFromToken(HttpContext, _configuration);
+            result = await _selling.paymentView(Convert.ToInt32(memberId), Convert.ToInt32(shopId), transactionId);
+            return View(result);
         }
     }
 }
