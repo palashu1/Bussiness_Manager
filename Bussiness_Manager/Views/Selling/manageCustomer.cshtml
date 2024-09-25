@@ -1,120 +1,139 @@
-﻿@model Bussiness_Manager.Utility.IGenericContainer<List<Bussiness_Manager.Dto.customerDto>>
+﻿@model Bussiness_Manager.Utility.PaginatedList<Bussiness_Manager.Dto.customerDto>
 @{
     ViewData["Title"] = "manageCustomer";
     Layout = "~/Views/Shared/_mainLayout.cshtml";
 }
 
 
-<div class="text-center" style="background-color:white; border-radius:1rem;">
-    <h1 class="display-4 text-primary">Customers</h1>
-    <br />
-
-    <form asp-action="updateToken" method="post">
-        <div class="Mvr text-center" style="background-color:white; border-radius:1rem;">
-
-            <table class="scrollable-table">
-                <thead>
-                    <tr>
-                        <th>
-                            Sno
-                        </th>
-                        <th>
-                            Customer Name
-                        </th>
-                        <th>
-                            Customer Address
-                        </th>
-                        <th>
-                            Mobile no
-                        </th>
-                        <th>
-                            Creation Date
-                        </th>
-                        <th>
-                            Balance Amount
-                        </th>
-                        <th>
-                            Action
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        int cnt=0;
-                        foreach (var customer in Model.Value)
-                        {
-                            cnt = cnt + 1;
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class=" fa fa-cubes bx bxs-group" aria-hidden="true"></i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">MANAGE CUSTOMER</h3>
+    </div>
+</div>
+<div class="Manage_items invoice_form add_customer bg-white mt-4" style="box-shadow:0 2px 10px rgba(0, 0, 0, 0.1);>
+    <div class="Items">
+        <div class="manage_items">
+            <div class="add_button add_stock manage_item-button">
+                <form method="get" asp-action="manageCustomer">
+                    <div class="d-lg-flex magn_search align-items-center">
+                        <div class="input-form me-3">
+                            <img src="/images/manage Search Icon.png" class="img-fluid" alt id="exampleFormControlInput1">
+                            <input type="text" class="form-control" placeholder="Search Here..." name="searchString" value="@ViewBag.SearchString">
+                        </div>
+                        <div class="select_choose">
+                            <div class="btn-group">
+                                <button class="resB btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="position-relative">
+                <div class="table-responsive manage_list_item">
+                    <table class="table man_lis_it">
+                        <thead class="bg-grey">
                             <tr>
-                                <td>
-                                   @cnt
-                                </td>
-                                <td>
-                                    @customer.name
-                                </td>
-                                <td>
-                                    @customer.address
-                                </td>
-                                <td>
-                                    @customer.mobileNo
-                                </td>
-                                <td>
-                                    @customer.createdOn.Value.ToString("dd/MM/yyyy")
-                                </td>
-                                <td>
-                                    @customer.address
-                                </td>
-                            
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="dropdown-toggle" type="button">
-                                            &#9776; <!-- This is the hamburger icon (three lines) -->
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item">Edit</a>
-                                            <a class="dropdown-item">Delete</a>
-                                            <a class="dropdown-item">Payment In</a>
-                                        </div>
-                                    </div>
-                                </td>
+                                <th scope="col">#</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Customer Address</th>
+                                <th scope="col">Mobile Number</th>
+                                <th scope="col">Balance Amount</th>
+                                <th scope="col">Creation Date</th>
+                                
+                        
+                                <th scope="col" width="129px"></th>
                             </tr>
+                        </thead>
+                        <tbody>
+                        @{
+                            int cnt = 0;
+                            @foreach (var customer in Model.Items)
+                            {
+                                cnt++;
+                                    <tr>
+                                        <td class="top">@cnt</td>
+                                        <td class="top">@customer.name</td>
+                                        <td class="top">@customer.address</td>
+                                        <td class="top">@customer.mobileNo</td>
+                                        <td class="top">@customer.balanceAmount</td>
+                                        <td class="top">@customer.createdOn.Value.ToString("dd-MM-yyyy")</td>
+                                        <td class="table_button d-flex align-items-center justify-content-end">
+                                            <a class="btn btn-warning btn-sm me-2" asp-action="addCustomer" asp-route-customerId="@customer.customerId">Edit</a>
+                                            @if (customer.balanceAmount > 0)
+                                            {
+                                                <a class="btn btn-success btn-sm me-2" asp-action="paymentIn" asp-route-customerId="@customer.customerId">Payment</a>
+                                                <a class="btn btn-danger btn-sm disabled" style="border:none;" href="javascript:void(0);" onclick="confirmDelete('@Url.Action("deleteCustomer", new { customerId = customer.customerId })')">Delete</a>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-success btn-sm me-2 disabled" asp-action="addItem" asp-route-id="@customer.customerId">Payment</a>
+                                                <a class="btn btn-danger btn-sm " style="border:none;" href="javascript:void(0);" onclick="confirmDelete('@Url.Action("deleteCustomer", new { customerId = customer.customerId })')">Delete</a>
+                                            }
+                                        
+                                        </td>
+                                    </tr>
+                            }
                         }
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
 
+                <!-- Pagination Controls -->
+                <div>
+                    <nav>
+                        <ul class="pagination" style="margin-top:revert;">
+                        @if (Model.HasPreviousPage)
+                        {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="manageCustomer" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+                                </li>
+                        }
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" asp-action="manageCustomer" asp-route-pageNumber="@i">@i</a>
+                                </li>
+                        }
+
+                        @if (Model.HasNextPage)
+                        {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="manageCustomer" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+                                </li>
+                        }
+                        </ul>
+                    </nav>
+                </div>
+                <!-- Pagination Controls -->
+
+            </div>
         </div>
-        <div class="text-lg-end" style=" border-color:black">
-            <p class="para"> Total shops : @ViewBag.Shops</p>
-            <button class="btn btn-primary text-white bto" type="submit" id="submitButton" disabled>Next-></button>
-        </div>
-    </form>
-
-
+    </div>
 </div>
 
-
-
-@section Scripts {
-
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-
-        @if (TempData["ShowAlert"] != null)
-        {
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    Swal.fire({
-                        title: '@ViewBag.title',
-                        text: '@ViewBag.message',
-                        icon: '@ViewBag.icon',
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didClose: () => {
-                            window.location.href = '@Url.Action("AddShop", "Home")';
-                        }
-                    });
-                });
-            </script>
-        }
+<script>
+    function confirmDelete(url) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
-}
+</script>
+
+
+
+
+

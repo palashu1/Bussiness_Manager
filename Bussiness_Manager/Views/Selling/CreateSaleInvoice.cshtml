@@ -78,7 +78,7 @@
             </div>
             <div style="width:100%">
                 <label for="saleInvoiceNo">Amount</label>
-                <input asp-for="SaleInvoice.paymentAmount" type="number" value="0" />
+                <input asp-for="SaleInvoice.paymentAmount" type="number" min="0" max="@Model.SaleInvoice.netAmount" oninput="checkInput(this)" />
             </div>
         </div>
 
@@ -94,7 +94,8 @@
     </div>
 </form>
 
-@section Scripts {
+@section Scripts 
+{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -225,4 +226,17 @@
         // Attach event listeners for the first product row
         attachListeners(0);
     </script>
+
+    @* Manage Enter payment Amount *@
+    <script>
+        function checkInput(input) {
+            var overallTotalText = document.getElementById('overall-total').innerText;
+            var overallTotal = parseFloat(overallTotalText.replace('₹', '').trim());
+            if (input.value >= overallTotal) {
+                input.value = overallTotal;  
+            }
+        }
+    </script>
+
+   
 }

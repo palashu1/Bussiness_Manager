@@ -14,5 +14,8 @@ namespace Bussiness_Manager.Services
         Task<GenericContainer<List<saleInvoiceListDto>>>manageSales(int memberId, int shopId);
         Task<GenericContainer<List<paymentInHistoryDto>>> paymentInHistoryList(int memberId, int shopId);
         Task<GenericContainer<paymentInHistoryDto>> paymentView(int memberId, int shopId, int transactionId);
+        Task<GenericContainer<string>> deleteCustomers(int memberId, int shopId, int customerId);
+        Task<GenericContainer<int>> deleteSale(int memberId, int shopId, int saleId);
+        Task<GenericContainer<PaymentInDto>> paymentIn(PaymentInDto dto);
     }
 }

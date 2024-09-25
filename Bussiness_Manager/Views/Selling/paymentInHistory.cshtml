@@ -41,6 +41,7 @@
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Transaction Date</th>
                                 <th scope="col">Net Amount</th>
+                                <th scope="col">Transaction Amount</th>
                                 <th scope="col">Paid Amount</th>
                                 <th scope="col">Balance Amount</th>
 
@@ -60,6 +61,7 @@
                                         <td class="top">@payment.customerName</td>
                                         <td class="top">@payment.createdOn.Value.ToString("dd-MM-yyyy")</td>
                                         <td class="top">@payment.netAmount</td>
+                                        <td class="top">@payment.transactionAmount</td>
                                         <td class="top">@payment.paidAmount</td>
                                         <td class="top">@payment.balanceAmount</td>
                                         <td class="table_button d-flex align-items-center justify-content-end">
@@ -79,21 +81,21 @@
                         @if (Model.HasPreviousPage)
                         {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+                                    <a class="page-link" asp-action="paymentInHistory" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
                                 </li>
                         }
 
                         @for (int i = 1; i <= Model.TotalPages; i++)
                         {
                                 <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@i">@i</a>
+                                    <a class="page-link" asp-action="paymentInHistory" asp-route-pageNumber="@i">@i</a>
                                 </li>
                         }
 
                         @if (Model.HasNextPage)
                         {
                                 <li class="page-item">
-                                    <a class="page-link" asp-action="manageSellingInvoice" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+                                    <a class="page-link" asp-action="paymentInHistory" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
                                 </li>
                         }
                         </ul>

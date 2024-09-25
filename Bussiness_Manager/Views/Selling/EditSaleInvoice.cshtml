@@ -78,7 +78,7 @@
             </div>
             <div style="width:100%">
                 <label for="paymentAmount">Amount</label>
-                <input asp-for="SaleInvoice.paymentAmount" type="number" value="@Model.SaleInvoice.paymentAmount" />
+                <input asp-for="SaleInvoice.paymentAmount" type="number" value="@Model.SaleInvoice.paymentAmount" oninput="checkInput(this)" />
             </div>
         </div>
         <!-- Overall Total Amount -->
@@ -257,6 +257,17 @@
         attachListeners(3);
         attachListeners(4);
         attachListeners(5);
+    </script>
+
+    @* Manage Enter payment Amount *@
+    <script>
+        function checkInput(input) {
+            var overallTotalText = document.getElementById('overall-total').innerText;
+            var overallTotal = parseFloat(overallTotalText.replace('₹', '').trim());
+            if (input.value >= overallTotal) {
+                input.value = overallTotal;
+            }
+        }
     </script>
 
 }

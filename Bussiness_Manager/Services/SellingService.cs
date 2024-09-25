@@ -26,7 +26,7 @@ namespace Bussiness_Manager.Services
                 if (dto.customerId > 0)
                 {
                     var customer = await _context.customers.Where(w => w.customerId == dto.customerId && w.memberId == dto.memberId && w.shopId == dto.shopId && w.dstatus == "V").FirstOrDefaultAsync();
-                    if(customer == null)
+                    if(customer != null)
                     {
                         customer.customerId = dto.customerId;
                         customer.memberId = customer.memberId;
@@ -90,7 +90,8 @@ namespace Bussiness_Manager.Services
             GenericContainer<List<customerDto>> result = new GenericContainer<List<customerDto>>();
             try
             {
-                var customers = await _context.customers.Where(w => w.memberId == memberId && w.shopId == shopId && w.dstatus == "V").Select(s => new customerDto()
+                var data = await _context.customers.AsNoTracking().Where(w => w.memberId == memberId && w.shopId == shopId && w.dstatus == "V").Include(i => i.Transactions).ToListAsync();
+                var customers = await _context.customers.AsNoTracking().Where(w => w.memberId == memberId && w.shopId == shopId && w.dstatus == "V").Include(i => i.Transactions).Select(s => new customerDto()
                 {
                     customerId = s.customerId,
                     memberId = s.memberId,
@@ -98,6 +99,7 @@ namespace Bussiness_Manager.Services
                     name = s.name,
                     address = s.address,
                     mobileNo = s.mobileNo,
+                    balanceAmount= (decimal)((s.Transactions.Where(w=>w.dstatus=="V").Select(s=>s.netAmount).FirstOrDefault()!=null? s.Transactions.Where(w=>w.dstatus=="V").Sum(s=>s.netAmount):0) -(s.Transactions.Where(w=>w.dstatus=="V").Sum(t=>t.transactionAmount))),
                     dstatus = s.dstatus,
                     createdOn = s.createdOn,
                     updatedOn = s.updatedOn,
@@ -119,6 +121,67 @@ namespace Bussiness_Manager.Services
             {
                 result.IsSuccessful = false;
                 result.status="Internal Server Error";
+            }
+            return result;
+        }
+        public async Task<GenericContainer<string>> deleteCustomers(int memberId, int shopId, int customerId)
+        {
+            GenericContainer<string> result = new GenericContainer<string>();
+            try
+            {
+                int save = 0;
+                var customer = await _context.customers.Where(w => w.memberId == memberId && w.shopId == shopId && w.customerId == customerId && w.dstatus == "V").FirstOrDefaultAsync();
+                if (customer != null) 
+                {
+                    customer.dstatus = "D";
+                    _context.customers.Update(customer);
+                    save = await _context.SaveChangesAsync();
+                    if (save > 0)
+                    {
+                        var sales = await _context.saleInvoices.Include(i=>i.saleInvoiceDetails).Where(w => w.memberId == memberId && w.shopId == shopId && w.customerId == customerId && w.dstatus == "V").ToListAsync();
+                        if (sales != null && sales.Any())
+                        {
+                            if (sales.Count > 0)
+                            {
+                                foreach(var sale in sales)
+                                {
+                                    sale.dstatus = "D";
+                                    _context.saleInvoices.Update(sale);
+                                    foreach(var saleInvoiceDetail in sale.saleInvoiceDetails)
+                                    {
+                                        saleInvoiceDetail.dstatus = "D";
+                                        _context.saleInvoiceDetails.Update(saleInvoiceDetail);
+                                    }
+                                }
+                                save+=await _context.SaveChangesAsync();
+                                if (save > 1)
+                                {
+                                    var transactions = await _context.transactions.Where(w => w.memberId == memberId && w.shopId == shopId && w.customerId == customerId && w.dstatus == "V").ToListAsync();
+                                    if(transactions != null && transactions.Any())
+                                    {
+                                        if(transactions.Count > 0)
+                                        {
+                                            foreach(var transaction in transactions)
+                                            {
+                                                transaction.dstatus="D";
+                                                _context.transactions.Update(transaction);
+                                            }
+                                            save+=await _context.SaveChangesAsync();
+                                            if (save > 2)
+                                            {
+                                                result.status = "Done";
+                                                result.Value = customerId.ToString();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) 
+            { 
             }
             return result;
         }
@@ -314,13 +377,14 @@ namespace Bussiness_Manager.Services
                                     }
                                 }
                                 await _context.SaveChangesAsync();
-                                var transaction = await _context.transactions.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.saleId == dto.saleId && (w.transactionModule == "CreateInvoice" || w.transactionModule == "UpdateInvoice")).FirstOrDefaultAsync();
+                                var transactions = await _context.transactions.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.saleId == dto.saleId).ToListAsync();
+                                var transaction = transactions.Where(w => (w.transactionModule == "CreateInvoice" || w.transactionModule == "UpdateInvoice")).FirstOrDefault();
                                 transaction.customerId = dto.customerId;
                                 transaction.saleId = dto.saleId;
                                 transaction.totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos);
                                 transaction.discount = dto.saleInvoiceDetailDtos.Sum(s => s.discount);
                                 transaction.netAmount = (calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount));
-                                transaction.balanceAmount = ((calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount))) - (dto.paymentAmount ?? 0);
+                                transaction.balanceAmount = ((calculateTotalAmount(dto.saleInvoiceDetailDtos)) - (dto.saleInvoiceDetailDtos.Sum(s => s.discount)??0)) - ((dto.paymentAmount ?? 0)+ (_context.transactions.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.customerId == dto.customerId && w.saleId == dto.saleId && w.dstatus == "V" && w.transactionModule != "CreateInvoice" && w.transactionModule != "UpdateInvoice").Sum(s => s.transactionAmount)));
                                 transaction.transactionAmount = dto.paymentAmount ?? 0;
                                 transaction.paymentMode = dto.paymentMode;
                                 transaction.transactionModule = "UpdateInvoice";
@@ -328,6 +392,19 @@ namespace Bussiness_Manager.Services
                                 _context.transactions.Update(transaction);
                                 await _context.SaveChangesAsync();
 
+                                transactions.RemoveAll(r => r.transactionModule == "CreateInvoice" || r.transactionModule == "UpdateInvoice");
+                                if(transactions!=null && transactions.Any())
+                                {
+                                    if (transactions.Count > 0)
+                                    {
+                                        foreach(var item in transactions)
+                                        {
+                                            item.balanceAmount = saleInvoice.netAmount - item.transactionAmount;
+                                            _context.transactions.Update(item);
+                                        }
+                                        await _context.SaveChangesAsync();
+                                    }
+                                }
                                 result.IsSuccessful = true;
                                 result.status = "update successfully";
                                 result.Value = dto.saleId.ToString();
@@ -374,7 +451,7 @@ namespace Bussiness_Manager.Services
                                 await _context.SaveChangesAsync();
                                 saleInvoiceDetail saleInvoiceDetail = new saleInvoiceDetail()
                                 {
-                                    saleId=saleDetail.saleId,
+                                    saleId= saleId,
                                     productId = saleDetail.productId,
                                     qty = saleDetail.qty,
                                     discount = saleDetail.discount ?? 0,
@@ -395,7 +472,7 @@ namespace Bussiness_Manager.Services
                                     shopId = dto.shopId,
                                     customerId = dto.customerId,
                                     saleId = saleId,
-                                    paymentNo = autoGeneratePaymentNo(dto.memberId, dto.shopId, dto.customerId, saleId),
+                                    paymentNo = autoGeneratePaymentNo(dto.memberId, dto.shopId, dto.customerId),
                                     transactionAmount = dto.paymentAmount ?? 0,
                                     paymentMode = dto.paymentMode,
                                     totalAmount = calculateTotalAmount(dto.saleInvoiceDetailDtos),
@@ -457,14 +534,17 @@ namespace Bussiness_Manager.Services
             var totalprice = saleprice * qty;
             return totalprice;
         }
-        private int? autoGeneratePaymentNo(int memberId, int shopId, int customerId, int saleId)
+        private int? autoGeneratePaymentNo(int memberId, int shopId, int customerId)
         {
             int? paymentNo = 0;
-            var transaction = _context.transactions.Where(w => w.memberId == memberId && w.shopId == shopId && w.customerId == customerId && w.saleId == saleId && w.dstatus == "V").ToList();
+            var transaction = _context.transactions.Where(w => w.memberId == memberId && w.shopId == shopId && w.customerId == customerId && w.dstatus == "V").ToList();
             if(transaction!=null && transaction.Any())
             {
-                int? payNo = transaction.OrderByDescending(o => o.transactionId).Select(s => s.paymentNo).FirstOrDefault();
-                paymentNo = payNo + 1;
+                if (transaction.Count > 0)
+                {
+                    int? payNo = transaction.OrderByDescending(o => o.transactionId).Select(s => s.paymentNo).FirstOrDefault();
+                    paymentNo = payNo + 1;
+                }
             }
             else
             {
@@ -526,9 +606,9 @@ namespace Bussiness_Manager.Services
                     netAmount=(decimal)s.netAmount,
                     discount=s.discount,
                     totalAmount=s.totalAmount,
-                    balanceAmount=s.Transactions.Where(n=> (n.transactionModule == "CreateInvoice" || n.transactionModule == "UpdateInvoice") && n.dstatus=="V").Select(m=>m.balanceAmount).FirstOrDefault(),
+                    balanceAmount=/*s.Transactions.Where(n=> (n.transactionModule == "CreateInvoice" || n.transactionModule == "UpdateInvoice") && n.dstatus=="V").Select(m=>m.balanceAmount).FirstOrDefault()*/s.netAmount- s.Transactions.Where(w=>w.dstatus=="V").Sum(s=>s.transactionAmount),
                     paymentMode=s.Transactions.Where(n=> (n.transactionModule == "CreateInvoice" || n.transactionModule == "UpdateInvoice") && n.dstatus=="V").Select(m=>m.paymentMode).FirstOrDefault(),
-                    paymentAmount=s.Transactions.Where(n=>(n.transactionModule== "CreateInvoice" || n.transactionModule== "UpdateInvoice") && n.dstatus=="V").Select(m=>m.transactionAmount).FirstOrDefault(),
+                    paymentAmount=/*s.Transactions.Where(n=>(n.transactionModule== "CreateInvoice" || n.transactionModule== "UpdateInvoice") && n.dstatus=="V").Select(m=>m.transactionAmount).FirstOrDefault()*/s.Transactions.Where(w=>w.dstatus=="V").Sum(s=>s.transactionAmount),
                     dstatus=s.dstatus,
                     createdOn=s.createdOn,
                     updatedOn=s.updatedOn,
@@ -582,10 +662,10 @@ namespace Bussiness_Manager.Services
                     customerName=s.Customer.name,
                     netAmount=s.netAmount,
                     paidAmount=s.Transactions.Sum(x=>x.transactionAmount),
-                    balanceAmount=s.Transactions.OrderByDescending(o=>o.transactionId).Select(x=>x.balanceAmount).FirstOrDefault(),
+                    balanceAmount=s.netAmount-s.Transactions.Where(w=>w.dstatus=="V").Sum(s=>s.transactionAmount),
                     dstatus=s.dstatus,
                     createdOn=s.createdOn,
-                    updatedOn=s.updatedOn
+                    updatedOn=s.updatedOn,
                 }).OrderByDescending(o => o.updatedOn).ToListAsync();
                 if(saleList!=null && saleList.Any())
                 {
@@ -609,6 +689,7 @@ namespace Bussiness_Manager.Services
         public async Task<GenericContainer<List<paymentInHistoryDto>>> paymentInHistoryList(int memberId, int shopId)
         {
             GenericContainer<List<paymentInHistoryDto>> result = new GenericContainer<List<paymentInHistoryDto>>();
+            List<paymentInHistoryDto> finalPaymentData = new List<paymentInHistoryDto>();
             try
             {
                 var data = await _context.transactions.Include(i => i.saleInvoice).Include(c => c.Customer).AsNoTracking().Where(w => w.memberId == memberId && w.shopId == shopId && w.dstatus == "V").Select(s => new paymentInHistoryDto()
@@ -621,20 +702,36 @@ namespace Bussiness_Manager.Services
                     transactionDate = s.createdOn,
                     customerId = s.customerId,
                     customerName = s.Customer.name,
-                    netAmount = s.netAmount,
-                    paidAmount = s.transactionAmount,
-                    balanceAmount = s.balanceAmount,
+                    netAmount = s.saleInvoice.netAmount,
+                    paidAmount = 0,
+                    transactionAmount=s.transactionAmount,
+                    balanceAmount = 0,
                     paymentNo = s.paymentNo,
                     paymentMode = s.paymentMode,
                     transactionModule = s.transactionModule,
                     dstatus = s.dstatus,
                     createdOn = s.createdOn,
                     updatedOn = s.updatedOn,
-                }).OrderByDescending(o => o.updatedOn).ToListAsync();
+                }).ToListAsync();
+                data.RemoveAll(r => r.transactionAmount == 0);
+                var dataGroupBy=data.GroupBy(r => r.saleId).ToList();
+                foreach(var group in dataGroupBy)
+                {
+                    decimal? grb = 0;
+                    var DataGroupBySaleId = data.Where(w => w.saleId == group.Key).ToList();
+                    foreach(var item in DataGroupBySaleId)
+                    {
+                        grb = grb + item.transactionAmount;
+                        item.paidAmount = grb;
+                        item.balanceAmount = item.netAmount - grb;
+                    }
+                    finalPaymentData.AddRange(DataGroupBySaleId);
+                }
+                finalPaymentData = finalPaymentData.OrderByDescending(o => o.transactionId).ToList();
 
                 result.IsSuccessful = true;
                 result.status = "paymentInHistoryList";
-                result.Value = data;
+                result.Value = finalPaymentData;
             }
             catch (Exception ex) 
             {
@@ -673,6 +770,97 @@ namespace Bussiness_Manager.Services
             catch (Exception ex)
             {
                 result.IsSuccessful = false;
+                result.status = "Server error";
+            }
+            return result;
+        }
+        public async Task<GenericContainer<int>> deleteSale(int memberId, int shopId, int saleId)
+        {
+            GenericContainer<int> result = new GenericContainer<int>();
+            int save = 0;
+            try
+            {
+                var sale = await _context.saleInvoices.Include(i => i.saleInvoiceDetails).Include(i => i.Transactions).Where(w => w.memberId == memberId && w.shopId == shopId && w.saleId == saleId && w.dstatus == "V").FirstOrDefaultAsync();
+                if (sale != null) 
+                {
+                    sale.dstatus = "D";
+                    _context.saleInvoices.Update(sale);
+                    save = await _context.SaveChangesAsync();
+                    if (save > 0)
+                    {
+                        if(sale.saleInvoiceDetails!=null && sale.saleInvoiceDetails.Any())
+                        {
+                            if (sale.saleInvoiceDetails.Count > 0)
+                            {
+                                foreach(var saleInvoiceDetail in sale.saleInvoiceDetails)
+                                {
+                                    saleInvoiceDetail.dstatus = "D";
+                                    _context.saleInvoiceDetails.Update(saleInvoiceDetail);
+                                }
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+
+                        if(sale.Transactions!=null && sale.Transactions.Any())
+                        {
+                            if(sale.Transactions.Count > 0)
+                            {
+                                foreach(var transaction in sale.Transactions)
+                                {
+                                    transaction.dstatus = "D";
+                                    _context.transactions.Update(transaction);
+                                }
+                                await _context.SaveChangesAsync();
+                                result.status = "Done";
+                                result.Value = saleId;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex) { }
+            return result;
+        }
+        public async Task<GenericContainer<PaymentInDto>> paymentIn(PaymentInDto dto)
+        {
+            GenericContainer<PaymentInDto> result = new GenericContainer<PaymentInDto>();
+            int save = 0;
+            try
+            {
+                dto.paymentInDetailDtos.RemoveAll(r => r.paymentAmount == null || r.paymentAmount == 0);
+                int? autoPaymentNo = autoGeneratePaymentNo(dto.memberId, dto.shopId, dto.customerId);
+                foreach (var payment in dto.paymentInDetailDtos)
+                {
+                    Transactions transactions = new Transactions()
+                    {
+                        memberId=dto.memberId,
+                        shopId=dto.shopId,
+                        customerId = dto.customerId,
+                        saleId= payment.saleId,
+                        totalAmount=0,
+                        netAmount=0,
+                        balanceAmount= (_context.transactions.Where(w=>w.memberId==dto.memberId && w.shopId==dto.shopId && w.customerId==dto.customerId && w.dstatus=="V").OrderByDescending(o=>o.transactionId).Select(s=>s.balanceAmount).FirstOrDefault())-payment.paymentAmount,
+                        dstatus="V",
+                        createdOn=indiaTimeZone.DateTimeIndia(),
+                        updatedOn=indiaTimeZone.DateTimeIndia(),
+                        paymentNo= autoPaymentNo,
+                        transactionAmount=payment.paymentAmount,
+                        paymentMode=dto.paymentMode,
+                        transactionModule="paymentIn"
+                    };
+                    _context.transactions.Add(transactions);
+                }
+                save = await _context.SaveChangesAsync();
+                if (save > 0) {
+                    result.IsSuccessful = true;
+                }
+                else
+                {
+                    result.IsSuccessful= false;
+                }
+            }catch(Exception ex)
+            {
+                result.IsSuccessful= false;
                 result.status = "Server error";
             }
             return result;

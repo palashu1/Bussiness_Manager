@@ -14,6 +14,7 @@ namespace Bussiness_Manager.Dto
         public string address { get; set; }
         public string mobileNo { get; set; }
         public string dstatus { get; set; }
+        public decimal balanceAmount {  get; set; }
         public DateTime? createdOn { get; set; }
         public DateTime? updatedOn { get; set; }
     }

@@ -979,3 +979,121 @@ div {
     padding-right: 5px;
     text-align: left;
 }
+
+
+
+
+
+/*paymentIn Row*/
+
+.border-gray {
+    border: 1px solid #aaa;
+    border-radius: 6px;
+}
+
+.invoice_form {
+    padding: 30px;
+}
+
+.bg-white {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-white-rgb), var(--bs-bg-opacity)) !important;
+}
+
+.g-2, .gx-2 {
+    --bs-gutter-x: 0.5rem;
+}
+
+
+.text-end {
+    text-align: right !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.invoice_form .form-group {
+    margin-bottom: 25px;
+}
+
+
+.input_all .form-select {
+    background: url(data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3E%3C/svg%3E);
+    background-color: transparent;
+    background-position: right 15px center;
+    background-repeat: no-repeat;
+    background-size: 10px;
+    color: #888;
+    font-size: 14px;
+    padding: 0 15px;
+}
+
+input_all .form-control, .input_all .form-select {
+    border-color: #ccc;
+    border-radius: 8px;
+    color: #222;
+    height: 38px;
+}
+
+.form-select {
+    display: block;
+    width: 100%;
+    padding: .375rem 2.25rem .375rem .75rem;
+    -moz-padding-start: calc(0.75rem - 3px);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    background-image: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e);
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+select {
+    word-wrap: normal;
+}
+
+button, select {
+    text-transform: none;
+}
+
+button, input, optgroup, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    /*font-size: inherit;
+    line-height: inherit;*/
+}
+
+.inovice_label .invoice_no, .inovice_label .invoice_width, .inovice_label .amount_with {
+    width: min-content;
+    min-width: 130px;
+}
+
+
+.row > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x)* .5);
+    padding-left: calc(var(--bs-gutter-x)* .5);
+    margin-top: var(--bs-gutter-y);
+}
+
+.inovice_label .invoice_width.invoice_date {
+    min-width: 105px;
+}

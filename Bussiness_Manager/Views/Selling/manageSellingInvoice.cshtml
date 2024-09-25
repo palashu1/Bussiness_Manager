@@ -64,8 +64,8 @@
                                           <td class="top">@sale.balanceAmount</td>
                                           <td class="table_button d-flex align-items-center justify-content-end">
                                               <a class="btn btn-primary btn-sm me-2" asp-action="salesView" asp-route-saleId="@sale.saleId">View</a>
-                                            <a class="btn btn-warning btn-sm me-2" asp-action="EditSaleInvoice" asp-route-saleId="@sale.saleId">Edit</a>
-                                              <a class="btn btn-danger btn-sm" style="border:none;" href="javascript:void(0);" onclick="confirmDelete('@Url.Action("deleteItem", new { id = sale.saleId })')">Delete</a>
+                                              <a class="btn btn-warning btn-sm me-2" asp-action="EditSaleInvoice" asp-route-saleId="@sale.saleId">Edit</a>
+                                              <a class="btn btn-danger btn-sm" style="border:none;" href="javascript:void(0);" onclick="confirmDelete('@Url.Action("deleteSaleInvoice", new { saleId = sale.saleId })')">Delete</a>
                                           </td>
                                       </tr>
                                }

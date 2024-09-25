@@ -4,42 +4,57 @@
     Layout = "~/Views/Shared/_mainLayout.cshtml";
 }
 
-
-<div class="container-sm mt-3">
-    <div class="row justify-content-center shadow-lg weight" style="background-color:white; border-radius:1rem">
-        <div class="col-md-5">
-            <h1 class="text-center" style="font-weight:bold">Add Customer</h1>
-            <form asp-action="addCustomer" method="post" class="small-text mt-3">   
-
-                <div class="form-group mb-3">
-                    <input asp-for="name" class="form-control Re" type="text" placeholder=" " />
-                    <label asp-for="name" style="font-weight:400">Customer Name</label>
-                    <span asp-validation-for="name" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <input asp-for="address" class="form-control Re" type="text" placeholder=" " />
-                    <label asp-for="address">Address</label>
-                    <span asp-validation-for="address" class="text-danger"></span>
-                </div>
-                <div class="form-group mb-3">
-                    <input asp-for="mobileNo" class="form-control Re" type="number" placeholder=" " />
-                    <label asp-for="mobileNo">Mobile no</label>
-                    <span asp-validation-for="mobileNo" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight">Add+</button>
-                
-            </form>
-        </div>
-
-        <div class="col-md-7 widget">
-            <div class=" h-100 d-flex justify-content-center align-items-center">
-                <i class="fa-solid fa-shapes fa-2xl"></i>
-            </div>
-        </div>
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class="fa fa-cubes bx bx-user-plus" aria-hidden="true"></i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">
+            @if (Model.customerId > 0)
+            {
+                <text>EDIT CUSTOMER</text>
+            }
+            else
+            {
+                <text>ADD CUSTOMER</text>
+            }
+        </h3>
     </div>
 </div>
+
+<form id="myForm" asp-action="addCustomer" method="post">
+    <div class="saleForm">
+        <div hidden>
+            <label for="saleInvoiceNo">Customer Id <text style="color:red">*</text></label>
+            <input asp-for="customerId" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Customer Name <text style="color:red">*</text></label>
+            <input asp-for="name" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Address <text style="color:red">*</text></label>
+            <input asp-for="address" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Mobile Number <text style="color:red">*</text></label>
+            <input asp-for="mobileNo" type="text" />
+        </div>
+        <div style="text-align:right">
+            <button type="submit" class="btn btn-primary">
+                @if (Model.customerId > 0)
+                {
+                    <text>Edit</text>
+                }
+                else
+                {
+                    <text>Save</text>
+                }
+            </button>
+        </div>
+    </div>
+</form>
+
 
 
 

@@ -29,12 +29,12 @@ namespace Bussiness_Manager.Controllers
         public async Task<IActionResult> deleteItem(int? id)
         {
             var product = await _context.products.Where(w => w.productId == id && w.dstatus == "V").FirstOrDefaultAsync();
-            if(product!=null)
+            if (product != null)
             {
                 //_context.products.Remove(product);
-                 product.dstatus = "D";
+                product.dstatus = "D";
                 _context.products.Update(product);
-                 await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             return RedirectToAction("manageItem");
         }
@@ -48,51 +48,51 @@ namespace Bussiness_Manager.Controllers
         [HttpPost]
         public async Task<IActionResult> addItemForm(Product product)
         {
-            IGenericContainer<string> result=new GenericContainer<string>();
+            IGenericContainer<string> result = new GenericContainer<string>();
             var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
             //if (ModelState.IsValid)
             //{
-                productDto dto = new productDto()
-                {
-                    productId = product.productId,
-                    memberId =Convert.ToInt32(memberId),
-                    shopId=Convert.ToInt32(shopId),
-                    productName= product.productName,
-                    productSummary=product.productSummary,
-                    qty=product.qty,
-                    hsnCode=product.hsnCode,
-                    salePrice=product.salePrice,
-                    color=product.color,
-                    brand=product.brand,
-                    size=product.size,
-                    productCode=product.productCode,
-                    unit=product.unit,
-                };
-                result = await _selling.createUpdateProduct(dto);
-                if (result.IsSuccessful)
-                {
-                    return RedirectToAction("manageItem", "Selling");
-                }
-                else
-                {
-                    TempData["ShowAlert"] = true;
-                    ViewBag.message = result.status;
-                    return RedirectToAction("addItem", "Selling");
-                }
-           // }
+            productDto dto = new productDto()
+            {
+                productId = product.productId,
+                memberId = Convert.ToInt32(memberId),
+                shopId = Convert.ToInt32(shopId),
+                productName = product.productName,
+                productSummary = product.productSummary,
+                qty = product.qty,
+                hsnCode = product.hsnCode,
+                salePrice = product.salePrice,
+                color = product.color,
+                brand = product.brand,
+                size = product.size,
+                productCode = product.productCode,
+                unit = product.unit,
+            };
+            result = await _selling.createUpdateProduct(dto);
+            if (result.IsSuccessful)
+            {
+                return RedirectToAction("manageItem", "Selling");
+            }
+            else
+            {
+                TempData["ShowAlert"] = true;
+                ViewBag.message = result.status;
+                return RedirectToAction("addItem", "Selling");
+            }
+            // }
             return RedirectToAction("addItem", "Selling");
         }
         public async Task<IActionResult> manageItem(string searchString, int? pageNumber)
         {
-            IGenericContainer<List<productDto>> result=new GenericContainer<List<productDto>>();
+            IGenericContainer<List<productDto>> result = new GenericContainer<List<productDto>>();
             int pageSize = 10;
-            var memberId=Helper.GetClaimsFromToken(HttpContext, _configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext, _configuration);
-            var Product =  _context.products.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.dstatus == "V").OrderByDescending(o=>o.updatedOn).AsQueryable();
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            var Product = _context.products.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.dstatus == "V").OrderByDescending(o => o.updatedOn).AsQueryable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                Product=Product.Where(p=>p.productName.Contains(searchString)
+                Product = Product.Where(p => p.productName.Contains(searchString)
                                         || p.salePrice.ToString().Contains(searchString)
                                         || p.hsnCode.Contains(searchString)
                                         || p.unit.Contains(searchString));
@@ -100,21 +100,32 @@ namespace Bussiness_Manager.Controllers
             var paginatedList = PaginatedList<Product>.Create(Product, pageNumber ?? 1, pageSize);
             return View(paginatedList);
         }
-        public async Task<IActionResult> addCustomer(int id)
+        public async Task<IActionResult> addCustomer(int customerId = 0)
         {
-            return View();
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            Customer customer = new Customer();
+            if (customerId > 0)
+            {
+                customer = await _context.customers.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.customerId == customerId && w.dstatus == "V").FirstOrDefaultAsync();
+            }
+            else
+            {
+                customer.customerId = 0;
+            }
+            return View(customer);
         }
         [HttpPost]
         public async Task<IActionResult> addCustomer(Customer customer)
         {
-            IGenericContainer<string> result=new GenericContainer<string>();
+            IGenericContainer<string> result = new GenericContainer<string>();
             var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
             if (ModelState.IsValid)
             {
                 customerDto dto = new customerDto()
                 {
-                    customerId = customer.shopId > 0 ? customer.customerId : 0,
+                    customerId = customer.customerId,
                     memberId = Convert.ToInt32(memberId),
                     shopId = Convert.ToInt32(shopId),
                     name = customer.name,
@@ -128,56 +139,71 @@ namespace Bussiness_Manager.Controllers
                 }
                 else
                 {
-                    TempData["ShowAlert"] = true;
-                    ViewBag.message = result.status;
-                    return View();
+                    return RedirectToAction("manageCustomer", "Selling");
                 }
             }
 
             return View();
         }
-        public async Task<IActionResult> manageCustomer()
+        public async Task<IActionResult> deleteCustomer(int customerId)
         {
-            IGenericContainer<List<customerDto>> result=new GenericContainer<List<customerDto>>();
+            IGenericContainer<string> result = new GenericContainer<string>();
             var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
             var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
-            result = await _selling.getAllCustomers(Convert.ToInt32(memberId),Convert.ToInt32(shopId));
-            return View(result);
+            result = await _selling.deleteCustomers(Convert.ToInt32(memberId), Convert.ToInt32(shopId), customerId);
+            return RedirectToAction("manageCustomer", "Selling");
+        }
+        public async Task<IActionResult> manageCustomer(string searchString, int? pageNumber)
+        {
+            IGenericContainer<List<customerDto>> result = new GenericContainer<List<customerDto>>();
+            int pageSize = 10;
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            result = await _selling.getAllCustomers(Convert.ToInt32(memberId), Convert.ToInt32(shopId));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                result.Value = result.Value.Where(s => s.name.Contains(searchString)
+                                                       || s.address.Contains(searchString)
+                                                       || s.mobileNo.ToString().Contains(searchString)
+                                                       || s.balanceAmount.ToString().Contains(searchString)).ToList();
+            }
+            var paginatedList = PaginatedList<customerDto>.manageCustomerPagination(result, pageNumber ?? 1, pageSize);
+            return View(paginatedList);
         }
         public async Task<IActionResult> CreateSaleInvoice()
         {
-            var memberId=Helper.GetClaimsFromToken(HttpContext,_configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext,_configuration);
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
             var customers = await _context.customers.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.dstatus == "V").Select(s => new customerDto()
             {
-                customerId=s.customerId,
-                memberId=s.memberId,
-                shopId=s.shopId,
-                name=s.name,
-                address=s.address,
-                mobileNo=s.mobileNo,
-                dstatus=s.dstatus,
-                createdOn=s.createdOn,
-                updatedOn=s.updatedOn
+                customerId = s.customerId,
+                memberId = s.memberId,
+                shopId = s.shopId,
+                name = s.name,
+                address = s.address,
+                mobileNo = s.mobileNo,
+                dstatus = s.dstatus,
+                createdOn = s.createdOn,
+                updatedOn = s.updatedOn
             }).ToListAsync();
             var products = await _context.products.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.dstatus == "V").Select(s => new productDto()
             {
-                productId=s.productId,
-                memberId=s.memberId,
-                shopId=s.shopId,
-                productName=s.productName,
-                productSummary=s.productSummary,
-                qty=s.qty,
-                hsnCode=s.hsnCode,
-                salePrice=s.salePrice,
-                color=s.color,
-                brand=s.brand,
-                size=s.size,
-                productCode=s.productCode,
-                unit=s.unit,
-                dstatus=s.dstatus,
-                createdOn=s.createdOn,
-                updatedOn=s.updatedOn
+                productId = s.productId,
+                memberId = s.memberId,
+                shopId = s.shopId,
+                productName = s.productName,
+                productSummary = s.productSummary,
+                qty = s.qty,
+                hsnCode = s.hsnCode,
+                salePrice = s.salePrice,
+                color = s.color,
+                brand = s.brand,
+                size = s.size,
+                productCode = s.productCode,
+                unit = s.unit,
+                dstatus = s.dstatus,
+                createdOn = s.createdOn,
+                updatedOn = s.updatedOn
             }).ToListAsync();
 
             var modeOfPayments = new List<modeOfPaymentDto>
@@ -188,13 +214,13 @@ namespace Bussiness_Manager.Controllers
                 new modeOfPaymentDto{id=4, paymentMode="Cheque"},
                 new modeOfPaymentDto{id=4, paymentMode="UPI"}
             };
-           
+
             var model = new SaleInvoiceViewModel
             {
-                Customers=customers,
-                Products=products,
-                SaleInvoice=new saleInvoiceDto(),
-                paymentModes= modeOfPayments
+                Customers = customers,
+                Products = products,
+                SaleInvoice = new saleInvoiceDto(),
+                paymentModes = modeOfPayments
             };
             return View(model);
         }
@@ -223,8 +249,8 @@ namespace Bussiness_Manager.Controllers
         public async Task<IActionResult> salesView(int saleId)
         {
             IGenericContainer<serviceSaleInvoiceDto> result = new GenericContainer<serviceSaleInvoiceDto>();
-            var memberId=Helper.GetClaimsFromToken(HttpContext, _configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext,_configuration);
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
             result = await _selling.getSalesView(Convert.ToInt32(memberId), Convert.ToInt32(shopId), saleId);
             return View(result);
         }
@@ -238,10 +264,10 @@ namespace Bussiness_Manager.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 result.Value = result.Value.Where(s => s.customerName.ToLower().Contains(searchString)
-                                                       ||s.invoiceNo.Contains(searchString)
-                                                       ||s.netAmount.ToString().Contains(searchString)
-                                                       ||s.paidAmount.ToString().Contains(searchString)
-                                                       ||s.balanceAmount.ToString().Contains(searchString)).ToList();
+                                                       || s.invoiceNo.Contains(searchString)
+                                                       || s.netAmount.ToString().Contains(searchString)
+                                                       || s.paidAmount.ToString().Contains(searchString)
+                                                       || s.balanceAmount.ToString().Contains(searchString)).ToList();
             }
             var paginatedList = PaginatedList<saleInvoiceListDto>.Create1(result, pageNumber ?? 1, pageSize);
             return View(paginatedList);
@@ -258,27 +284,27 @@ namespace Bussiness_Manager.Controllers
                      new modeOfPaymentDto{id=4, paymentMode="Cheque"},
                      new modeOfPaymentDto{id=4, paymentMode="UPI"}
                 };
-            var model = await _context.saleInvoices.Include(i => i.saleInvoiceDetails).AsNoTracking().Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId)
+            var model = await _context.saleInvoices.Include(i => i.saleInvoiceDetails).Include(i => i.Transactions).AsNoTracking().Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId)
             && w.saleId == saleId && w.dstatus == "V").Select(s => new SaleInvoiceViewModel()
             {
                 SaleInvoice = new saleInvoiceDto()
                 {
                     saleInvoiceNo = s.saleInvoiceNo,
                     customerId = s.customerId,
-                    netAmount=s.netAmount,
-                    saleId=s.saleId
+                    netAmount = s.netAmount,
+                    saleId = s.saleId,
                 },
                 SaleInvoiceList = s.saleInvoiceDetails.Select(x => new saleInvoiceDetailDto()
                 {
-                    sdId=x.sdId,
+                    sdId = x.sdId,
                     saleId = x.saleId,
-                    productId=x.productId,
-                    netAmount= x.netAmount,
-                    dstatus =x.dstatus,
-                    createdOn=x.createdOn,
-                    updatedOn=x.updatedOn,
-                    qty=x.qty,
-                    discount= x.discount,
+                    productId = x.productId,
+                    netAmount = x.netAmount,
+                    dstatus = x.dstatus,
+                    createdOn = x.createdOn,
+                    updatedOn = x.updatedOn,
+                    qty = x.qty,
+                    discount = x.discount,
                     price = x.price,
                 }).ToList(),
                 Customers = _context.customers.Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId) && w.dstatus == "V").Select(s => new customerDto()
@@ -312,13 +338,21 @@ namespace Bussiness_Manager.Controllers
                     createdOn = s.createdOn,
                     updatedOn = s.updatedOn
                 }).ToList(),
-               paymentModes=paymentModes
+                paymentModes = paymentModes
             }).FirstOrDefaultAsync();
             return View(model);
         }
+        public async Task<IActionResult> deleteSaleInvoice(int saleId)
+        {
+            IGenericContainer<int> result = new GenericContainer<int>();
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            result = await _selling.deleteSale(Convert.ToInt32(memberId), Convert.ToInt32(shopId), saleId);
+            return RedirectToAction("manageSellingInvoice", "Selling");
+        }
         public async Task<IActionResult> paymentInHistory(string searchString, int? pageNumber)
         {
-            IGenericContainer<List<paymentInHistoryDto>> result=new GenericContainer<List<paymentInHistoryDto>>();
+            IGenericContainer<List<paymentInHistoryDto>> result = new GenericContainer<List<paymentInHistoryDto>>();
             int pageSize = 10;
             var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
             var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
@@ -327,7 +361,7 @@ namespace Bussiness_Manager.Controllers
             {
                 result.Value = result.Value.Where(s => s.saleInvoiceNo.Contains(searchString)
                                                        || s.transactionDate.ToString().Contains(searchString)
-                                                       || s.customerName.ToLower().ToString().Contains(searchString)
+                                                       || s.customerName.ToString().Contains(searchString)
                                                        || s.netAmount.ToString().Contains(searchString)
                                                        || s.paidAmount.ToString().Contains(searchString)
                                                        || s.balanceAmount.ToString().Contains(searchString)
@@ -339,10 +373,50 @@ namespace Bussiness_Manager.Controllers
         public async Task<IActionResult> paymentReceipt(int transactionId)
         {
             IGenericContainer<paymentInHistoryDto> result = new GenericContainer<paymentInHistoryDto>();
-            var memberId=Helper.GetClaimsFromToken(HttpContext, _configuration);
-            var shopId=Helper.GetShopIdFromToken(HttpContext, _configuration);
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
             result = await _selling.paymentView(Convert.ToInt32(memberId), Convert.ToInt32(shopId), transactionId);
             return View(result);
         }
+        public async Task<IActionResult> paymentIn(int customerId)
+        {
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            var shopId = Helper.GetShopIdFromToken(HttpContext, _configuration);
+            var model1 = await _context.customers.Include(i => i.saleInvoices).Include(i => i.Transactions).AsNoTracking().Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId)
+            && w.customerId == customerId && w.dstatus == "V").FirstOrDefaultAsync();
+            var model = await _context.customers.Include(i => i.saleInvoices).Include(i => i.Transactions).AsNoTracking().Where(w => w.memberId == Convert.ToInt32(memberId) && w.shopId == Convert.ToInt32(shopId)
+            && w.customerId == customerId && w.dstatus == "V").Select(s => new PaymentInDto()
+            {
+                customerId = customerId,
+                customerName = s.name,
+                balanceDue = (s.saleInvoices.Where(w => w.dstatus == "V").Sum(s => s.netAmount)) - (s.Transactions.Where(w => w.dstatus == "V").Sum(s => s.transactionAmount)),
+                updatedOn = s.updatedOn,
+                paymentInDetailDtos = s.saleInvoices.Where(w => w.dstatus == "V").Select(t => new PaymentInDetailDto()
+                {
+                    saleId = t.saleId,
+                    saleInvoiceNo = t.saleInvoiceNo,
+                    invoiceDate = t.createdOn,
+                    originalAmount = t.totalAmount,
+                    currentAmount = t.netAmount,
+                    paidAmount = s.Transactions.Where(w => w.saleId == t.saleId && w.dstatus == "V").Sum(m => m.transactionAmount),
+                    balanceAmount = (t.netAmount - s.Transactions.Where(w => w.saleId == t.saleId && w.dstatus == "V").Sum(m => m.transactionAmount)),
+                    createdOn = t.createdOn,
+                    updatedOn = t.updatedOn
+                }).ToList()
+            }).FirstOrDefaultAsync();
+            model.paymentInDetailDtos.RemoveAll(r => r.balanceAmount == 0);
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> paymentIn(PaymentInDto model)
+        {
+            IGenericContainer<PaymentInDto> result = new GenericContainer<PaymentInDto>();
+            model.memberId = Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext, _configuration));
+            model.shopId = Convert.ToInt32(Helper.GetShopIdFromToken(HttpContext, _configuration));
+            result = await _selling.paymentIn(model);
+            return RedirectToAction("paymentInHistory", "Selling");
+        }
+
     }
 }

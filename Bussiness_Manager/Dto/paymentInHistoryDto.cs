@@ -22,6 +22,7 @@
         public int? paymentNo {  get; set; }
         public string paymentMode { get; set; }
         public string transactionModule {  get; set; }
+        public decimal? transactionAmount { get; set; }
         public string dstatus {  get; set; }
         public DateTime? createdOn { get;set; }
         public DateTime? updatedOn { get; set; }
