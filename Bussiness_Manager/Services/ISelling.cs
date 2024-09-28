@@ -17,5 +17,7 @@ namespace Bussiness_Manager.Services
         Task<GenericContainer<string>> deleteCustomers(int memberId, int shopId, int customerId);
         Task<GenericContainer<int>> deleteSale(int memberId, int shopId, int saleId);
         Task<GenericContainer<PaymentInDto>> paymentIn(PaymentInDto dto);
+        Task<GenericContainer<int>> addShops(shopDetailDto dto);
+        Task<GenericContainer<List<shopDetailDto>>> manageShops(int memberId);
     }
 }

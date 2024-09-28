@@ -865,5 +865,103 @@ namespace Bussiness_Manager.Services
             }
             return result;
         }
+        public async Task<GenericContainer<int>> addShops(shopDetailDto dto)
+        {
+            GenericContainer<int> result = new GenericContainer<int>();
+            int save = 0;
+            try
+            {
+                if (dto.shopId > 0)
+                {
+                    var shop = await _context.shopDetails.Where(w => w.memberId == dto.memberId && w.shopId == dto.shopId && w.dstatus == "V").FirstOrDefaultAsync();
+                    if (shop != null)
+                    {
+                        shop.memberId = dto.memberId;
+                        shop.shopName = dto.shopName;
+                        shop.shopDescription= dto.shopDescription;
+                        shop.bussinessType= dto.bussinessType;
+                        shop.shopAddress= dto.shopAddress;
+                        shop.logo = "Logo";
+                        shop.dstatus = "V";
+                        shop.updatedOn = indiaTimeZone.DateTimeIndia();
+                        _context.shopDetails.Update(shop);
+                        save = await _context.SaveChangesAsync();
+                        if (save > 0)
+                        {
+                            result.IsSuccessful = true;
+                            result.status = "Update Successfully";
+                        }
+                        else
+                        {
+                            result.IsSuccessful = false;
+                            result.status = "Update Failed";
+                        }
+                    }
+                }
+                else
+                {
+                    ShopDetail shopDetail = new ShopDetail()
+                    {
+                        memberId = dto.memberId,
+                        shopName = dto.shopName,
+                        shopDescription = dto.shopDescription,
+                        bussinessType = dto.bussinessType,
+                        shopAddress = dto.shopAddress,
+                        logo = "Logo",
+                        dstatus = "V",
+                        createdOn = indiaTimeZone.DateTimeIndia(),
+                        updatedOn = indiaTimeZone.DateTimeIndia(),
+                    };
+                    _context.shopDetails.Add(shopDetail);
+                    save = await _context.SaveChangesAsync();
+                    if (save > 0)
+                    {
+                        result.IsSuccessful = true;
+                        result.status = "Done";
+                        result.Value = shopDetail.shopId;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.status = "Failed";
+                    }
+                }
+               
+            }
+            catch (Exception ex) 
+            {
+                result.IsSuccessful = false;
+                result.status = "Server error";
+            }
+            return result;
+        }
+        public async Task<GenericContainer<List<shopDetailDto>>> manageShops(int memberId)
+        {
+            GenericContainer<List<shopDetailDto>> result = new GenericContainer<List<shopDetailDto>>();
+            try
+            {
+                var shopDetails = await _context.shopDetails.Where(w => w.memberId == memberId &&  w.dstatus == "V").Select(s => new shopDetailDto()
+                {
+                    memberId = s.memberId,
+                    shopId = s.shopId,
+                    shopName = s.shopName,
+                    shopDescription = s.shopDescription,
+                    bussinessType = s.bussinessType,
+                    logo = s.logo,
+                    shopAddress = s.shopAddress,
+                    dstatus = s.dstatus,
+                    createdOn = s.createdOn,
+                    updatedOn = s.updatedOn,
+                }).OrderByDescending(o => o.updatedOn).ToListAsync();
+                result.IsSuccessful = true;
+                result.Value = shopDetails;
+            }
+            catch(Exception ex)
+            {
+                result.IsSuccessful = false;
+                result.status = "Server error";
+            }
+            return result;
+        }
     }
 }

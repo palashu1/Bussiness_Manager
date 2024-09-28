@@ -7,7 +7,7 @@
 
 
 
-<div class="container-sm mt-3">
+@* <div class="container-sm mt-3">
     <div class="row justify-content-center shadow-lg weight" style="background-color:white;">
         <div class="col-md-5">
             <form asp-action="Registration" method="post" class="small-text">
@@ -51,8 +51,6 @@
                 <div class="form-group mb-3">
                     <a href="@Url.Action("Login", "Home")" class="custom-link">Already have an account?</a>
                 </div>
-
-                @* <button id="confirmationButton" type="submit" class="btn btn-primary form-group mb-3 w-100 weight" data-has-message="@(TempData["ConfirmationMessage"] != null)"> Sign Up</button> *@
                 <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight"  onclick="displayAlert()"> Sign Up</button>
             </form>
         </div>
@@ -62,6 +60,96 @@
                 <i class="fa-solid fa-shapes fa-2xl"></i>
             </div>
         </div>
+    </div>
+</div> *@
+
+<div class="login">
+    <div class="row g-0">
+        @* <div class="col-lg-6 position-relative"> *@
+            <div class="login-form sign_up">
+                <div class="company_logo text-center">
+                    <a href="/">
+                        <img src="/images/download.jfif">
+                    </a>
+                </div>
+                <div class="login_heading">
+                    <h2>Sign up</h2>
+                </div>
+                <form asp-action="Registration" method="post" class="small-text">
+                    <div class="login_input">
+                        <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="firstName">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    First name<text style="color:red">*</text>
+                                </label>
+                                <input asp-for="firstName" type="text" maxlength="95" name="firstname" class="form-control" placeholder="Enter First Name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="lastName">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    Last name<text style="color:red">*</text>
+                                </label>
+                                <input asp-for="lastName" type="text" maxlength="95" name="lastname" class="form-control" placeholder="Enter Last Name">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="password">
+                                    <i class="fa fa-lock" aria-hidden="true"></i>
+                                    Password<text style="color:red">*</text>
+                                </label>
+                                <input asp-for="password" type="password" autocomplete="new-password" name="password" class="form-control" placeholder="Enter Password">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="email">
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    Email<text style="color:red;">*</text>
+                                </label>
+                                <input asp-for="email" type="text" name="email" class="form-control" placeholder="Enter Email">
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="phone">
+                                    <i class="fa fa-mobile" aria-hidden="true"></i>
+                                    Mobile No<text style="color:red">*</text>
+                                </label>
+                                <div class="d-flex with_otp">
+                                    <div  class="custom_input position-relative w-100">
+                                        <input asp-for="phone" type="number" min="0" name="phone" class="form-control" placeholder="Enter Mobile Number">
+                                        <span  class="number_input">+91</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                        <div class="form-group mb-0">
+                        <button type="submit" class="btn w-100" onclick="displayAlert()">Sign Up</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="not_register text-center mt-3">
+                    <p>
+                        Already have an account?
+                        <a href="@Url.Action("Login", "Home")">Log in</a>
+                    </p>
+                </div>
+            </div>
+        @* </div> *@
+        @* <div class="col-lg-6 login_bg">
+            <div class="middle_login_img">
+                <img src="/images/new1.jpg" alt="Billing-and-accouting-software" class="img-fluid side-logo">
+            </div>
+        </div> *@
     </div>
 </div>
 

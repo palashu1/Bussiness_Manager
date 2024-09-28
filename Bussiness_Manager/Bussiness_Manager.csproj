@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Selling\manageCustomer.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Selling\manageShop.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Selling\paymentInHistory.cshtml" />
   </ItemGroup>
 
@@ -35,6 +36,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Selling\paymentInHistory.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Selling\manageShop.cshtml" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,72 @@
+﻿@model Bussiness_Manager.Dto.shopDetailDto;
+@{
+    ViewData["Title"] = "createUpdateShop";
+    Layout = "~/Views/Shared/_mainLayout.cshtml";
+}
+
+<div class="heading_with_bread d-flex align-items-center">
+    <div class="left_icon">
+        <i class="fa fa-cubes bx bx-store" aria-hidden="true"></i>
+    </div>
+    <div class="right_heading">
+        <h3 style="font-weight:bold">
+            @if (Model.shopId > 0)
+            {
+                <text>EDIT SHOP</text>
+            }
+            else
+            {
+                <text>ADD SHOP</text>
+            }
+        </h3>
+    </div>
+</div>
+
+<form id="myForm" asp-action="createUpdateShop" method="post">
+    <div class="saleForm">
+        <div hidden>
+            <label for="saleInvoiceNo">Shop Id <text style="color:red">*</text></label>
+            <input asp-for="shopId" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Shop Name <text style="color:red">*</text></label>
+            <input asp-for="shopName" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Description</label>
+            <input asp-for="shopDescription" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Bussiness Type <text style="color:red">*</text></label>
+            <input asp-for="bussinessType" type="text" />
+        </div>
+        <div>
+            <label for="saleInvoiceNo">Shop Address <text style="color:red">*</text></label>
+            <input asp-for="shopAddress" type="text" />
+        </div>
+        <div style="text-align:right">
+            <button type="submit" class="btn btn-primary">
+                @if (Model.shopId > 0)
+                {
+                    <text>Edit</text>
+                }
+                else
+                {
+                    <text>Save</text>
+                }
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+@section Scripts {
+
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

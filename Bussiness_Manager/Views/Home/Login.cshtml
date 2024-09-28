@@ -5,7 +5,7 @@
 }
 
 
-<div class="container-sm mt-3">
+@* <div class="container-sm mt-3">
     <div class="row justify-content-center shadow-lg weight" style="background-color:white; border-radius:1rem">
         <div class="col-md-5">
             <h1 class="text-center" style="font-weight:bold">Log In</h1>
@@ -27,7 +27,6 @@
                     <a href="@Url.Action("Registration", "Home")" class="custom-link"> Forgot Password?</a>
                 </div>
 
-                @* <button id="confirmationButton" type="submit" class="btn btn-primary form-group mb-3 w-100 weight" data-has-message="@(TempData["ConfirmationMessage"] != null)"> Sign Up</button> *@
                 <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight">Log In</button>
                 <div class="form-group mb-3">
                     <a href="@Url.Action("Registration", "Home")" class="custom-link">  Don't have an account?</a>
@@ -41,9 +40,52 @@
             </div>
         </div>
     </div>
+</div> *@
+
+<div class="login-form">
+    <div class="company_logo text-center">
+        <a href="/">
+           <img src="/images/download.jfif">
+        </a>
+    </div>
+    <div class="login_heading">
+        <h2>Log in</h2>
+    </div>
+    <div class="login_input">
+        <form asp-action="Login" method="post" class="small-text mt-3">
+            <div class="form-group">
+                <label asp-for="phone">
+                    <i class="fa fa-mobile"></i>
+                    Mobile No
+                </label>
+                <div class="custom_input position-relative">
+                    <input asp-for="phone" type="number" min="0" class="form-control" name="phone" placeholder="Enter Mobile Number">
+                    <span class="number_input">+91</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="password">
+                    <i class="fa fa-lock"></i>
+                    Password
+                </label>
+                <input asp-for="password" type="password" class="form-control" name="password" placeholder="Enter Password">
+
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn w-100">Log in</button>
+            </div>
+        </form>
+        <div class="form-group d-flex justify-content-between forgot_password mb-0">
+            <a href="/">Forgot password ?</a>
+        </div>
+    </div>
+    <div class="not_register text-center mt-3">
+        <p>
+            Not registered ?
+            <a href="@Url.Action("Registration", "Home")">Sign up</a>
+        </p>
+    </div>
 </div>
-
-
 
 
 @section Scripts {
@@ -92,7 +134,6 @@
 
         @if (TempData["ShowAlert2"] != null)
         {
-
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     Swal.fire({

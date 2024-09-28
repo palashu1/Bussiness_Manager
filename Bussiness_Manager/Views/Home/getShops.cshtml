@@ -7,26 +7,23 @@
 
 
 <div class="text-center" style="background-color:white; border-radius:1rem;">
-    <h1 class="display-4">Shops</h1>
+    <h2 class="display-4" style="font-weight:700;">Shops</h2>
     <br />
 
     <form asp-action="updateToken" method="post">
-        <div class="table-wrapper text-center" style="background-color:white; border-radius:1rem;">
+        <div class="table-wrapper text-center" style="background-color:white;">
 
             <table class="scrollable-table">
                 <thead>
                     <tr>
-                        <th hidden>
-                            Shop Id
+                        <th>
+                            #
                         </th>
                         <th>
                             Name
                         </th>
                         <th>
                             Bussiness Type
-                        </th>
-                        <th>
-                            Logo
                         </th>
                         <th>
                             Address
@@ -40,28 +37,23 @@
                         <th>
                             Choose One
                         </th>
-                        <th>
-                            Action
-                        </th>
-
                     </tr>
                 </thead>
                 <tbody>
                     @{
+                        int cnt = 0;
                         foreach (var shop in Model)
                         {
+                            cnt++;
                             <tr>
                                 <td>
-                                    @shop.shopId
+                                   @cnt
                                 </td>
                                 <td>
                                     @shop.shopName
                                 </td>
                                 <td>
                                     @shop.bussinessType
-                                </td>
-                                <td>
-                                    @shop.logo
                                 </td>
                                 <td>
                                     @shop.shopAddress
@@ -80,17 +72,7 @@
                                            onclick="handleCheckboxClick(this)" />
                                 </td>
 
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="dropdown-toggle" type="button">
-                                            &#9776; <!-- This is the hamburger icon (three lines) -->
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item">Edit</a>
-                                            <a class="dropdown-item">Delete</a>
-                                        </div>
-                                    </div>
-                                </td>
+                               
                             </tr>
                         }
                     }
@@ -98,8 +80,7 @@
             </table>
 
         </div>
-        <div class="text-lg-end" style=" border-color:black">
-            <p class="para"> Total shops : @ViewBag.Shops</p>
+        <div class="text-lg-end" style="margin-top:22px;">
             <button class="btn btn-primary text-white bto" type="submit" id="submitButton" disabled  >Next-></button>
         </div>
     </form>

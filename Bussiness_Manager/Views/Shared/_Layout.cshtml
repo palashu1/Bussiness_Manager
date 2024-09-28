@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Bussiness_Manager.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <!-- Loader and Overlay HTML -->
@@ -59,14 +62,13 @@
         };
 
         function showLoader() {
-            document.getElementById("loader-overlay").style.display = "flex"; // Show overlay and loader
+            document.getElementById("loader-overlay").style.display = "flex"; 
         }
 
         function hideLoader() {
-            document.getElementById("loader-overlay").style.display = "none"; // Hide overlay and loader
+            document.getElementById("loader-overlay").style.display = "none";
         }
 
-        // Show the loader when any form is submitted
         document.querySelectorAll("form").forEach(function (form) {
             form.addEventListener("submit", function () {
                 showLoader();

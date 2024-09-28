@@ -49,7 +49,7 @@ namespace Bussiness_Manager.Controllers
                     email = members.email,
                     password = members.password,
                     phone = members.phone,
-                    confirmPassword = members.confirmPassword,
+                    //confirmPassword = members.confirmPassword,
                 };
 
                 result = await _memberService.createMember(Dto);

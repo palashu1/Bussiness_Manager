@@ -2,7 +2,8 @@
 {
     public class shopDetailDto
     {
-        public int? shopId { get; set; }
+        public int memberId {  get; set; }
+        public int shopId { get; set; }
         public string shopName { get; set; }
         public string shopDescription { get; set; }
         public string bussinessType { get; set; }

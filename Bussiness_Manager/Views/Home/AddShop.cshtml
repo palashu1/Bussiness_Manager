@@ -13,11 +13,13 @@
         <div class="col-md-5">
             <form asp-action="AddShop" method="post" class="small-text">
 
-                <div hidden class="form-group mb-3 g1 form-group">
+                @* <div hidden class="form-group mb-3 g1 form-group">
                     <input asp-for="memberId" placeholder=" " class="form-control As" value="@Model.memberId"/>
-                    <label asp-for="memberId">Shop name</label>
+                    <label asp-for="memberId">memberId</label>
                     <span asp-validation-for="memberId" class="text-danger"></span>
                 </div>
+
+               
 
                 <div class="form-group mb-3 g1 form-group">
                     <input asp-for="shopName" placeholder=" " class="form-control As" />
@@ -43,7 +45,53 @@
                     <span asp-validation-for="shopAddress" class="text-danger"></span>
                 </div>
                 
-                    <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight" > Add+</button>
+                    <button type="submit" class="btn btn-primary form-group mb-3 w-100 weight" > Add+</button> *@
+                <div class="login_input" style="border:hidden;">
+                    <div hidden class="form-group">
+                    <label asp-for="memberId">
+                        <i class="fa fa-mobile"></i>
+                        memberId
+                    </label>
+                    <div class="custom_input position-relative">
+                        <input asp-for="memberId" type="number" min="0" class="form-control" name="memberId">
+                    </div>
+                </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="shopName">
+                            <i class="fa fa-shopping-bag"></i>
+                            Shop name
+                        </label>
+                        <input asp-for="shopName" type="text" class="form-control" name="shopName" placeholder="Enter Shop Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="shopDescription">
+                            <i class="fa fa-shopping-bag"></i>
+                            Description
+                        </label>
+                        <input asp-for="shopDescription" type="text" class="form-control" name="shopDescription" placeholder="Enter Description">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="bussinessType">
+                            <i class="fa fa-suitcase"></i>
+                            Bussiness Type
+                        </label>
+                        <input asp-for="bussinessType" type="text" class="form-control" name="bussinessType" placeholder="Enter Bussiness Type">
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="shopAddress">
+                            <i class="fa fa-address-card"></i>
+                            Address
+                        </label>
+                        <input asp-for="shopAddress" type="text" class="form-control" name="shopAddress" placeholder="Enter Address">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn w-100">Save</button>
+                    </div>
+                </div>
                 
             </form>
         </div>
@@ -55,6 +103,10 @@
         </div>
     </div>
 </div>
+
+
+
+
 
 
 @section Scripts {

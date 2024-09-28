@@ -26,6 +26,56 @@ namespace Bussiness_Manager.Controllers
             return View();
         }
 
+        public async Task<IActionResult> createUpdateShop(int shopId=0)
+        {
+            shopDetailDto shop = new shopDetailDto();
+            if (shopId > 0) 
+            {
+                shop = _context.shopDetails.Where(w => w.memberId == Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext, _configuration)) && w.shopId == shopId && w.dstatus == "V").Select(s => new shopDetailDto()
+                {
+                    shopId=s.shopId,
+                    memberId=s.memberId,
+                    shopName=s.shopName,
+                    shopDescription=s.shopDescription,
+                    bussinessType=s.bussinessType,
+                    logo=s.logo,
+                    shopAddress=s.shopAddress,
+                    dstatus=s.dstatus,
+                    createdOn=s.createdOn,
+                    updatedOn=s.updatedOn
+                }).FirstOrDefault();
+            }
+            else
+            {
+                shop.shopId = 0;
+            }
+            
+            return View(shop);
+        }
+        [HttpPost]
+        public async Task<IActionResult> createUpdateShop(shopDetailDto model)
+        {
+            IGenericContainer<int> result = new GenericContainer<int>();
+            var memberId = Helper.GetClaimsFromToken(HttpContext, _configuration);
+            model.memberId = Convert.ToInt32(memberId);
+            result = await _selling.addShops(model);
+            return RedirectToAction("manageShop", "Selling");
+        }
+        public async Task<IActionResult> manageShop(string searchString, int? pageNumber)
+        {
+            IGenericContainer<List<shopDetailDto>> result=new GenericContainer<List<shopDetailDto>>();
+            int pageSize = 10;
+            result = await _selling.manageShops(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext,_configuration)));
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                result.Value = result.Value.Where(s => s.shopName.Contains(searchString)
+                                                       || s.shopDescription.Contains(searchString)
+                                                       || s.bussinessType.ToString().Contains(searchString)
+                                                       || s.shopAddress.ToString().Contains(searchString)).ToList();
+            }
+            var paginatedList = PaginatedList<shopDetailDto>.manageShopPagination(result, pageNumber ?? 1, pageSize);
+            return View(paginatedList);
+        }
         public async Task<IActionResult> deleteItem(int? id)
         {
             var product = await _context.products.Where(w => w.productId == id && w.dstatus == "V").FirstOrDefaultAsync();
@@ -417,6 +467,5 @@ namespace Bussiness_Manager.Controllers
             result = await _selling.paymentIn(model);
             return RedirectToAction("paymentInHistory", "Selling");
         }
-
     }
 }

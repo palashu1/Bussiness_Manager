@@ -33,11 +33,11 @@ namespace Bussiness_Manager.Models
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         public string password { get; set; }
 
-        [NotMapped]
-        [Required(ErrorMessage = "Confirm Password is required.")]
-        [DataType(DataType.Password)]
-        [Compare("password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string confirmPassword { get; set; }
+        //[NotMapped]
+        //[Required(ErrorMessage = "Confirm Password is required.")]
+        //[DataType(DataType.Password)]
+        //[Compare("password", ErrorMessage = "The password and confirmation password do not match.")]
+        //public string confirmPassword { get; set; }
 
         [Column(TypeName = "nvarchar(2)")]
         public string? dstatus {  get; set; }
