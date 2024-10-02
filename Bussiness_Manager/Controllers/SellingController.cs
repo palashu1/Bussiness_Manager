@@ -65,7 +65,7 @@ namespace Bussiness_Manager.Controllers
         {
             IGenericContainer<List<shopDetailDto>> result=new GenericContainer<List<shopDetailDto>>();
             int pageSize = 10;
-            result = await _selling.manageShops(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext,_configuration)));
+            result = await _selling.manageShops(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext,_configuration)),Convert.ToInt32(Helper.GetShopIdFromToken(HttpContext,_configuration)));
             if (!string.IsNullOrEmpty(searchString))
             {
                 result.Value = result.Value.Where(s => s.shopName.Contains(searchString)
@@ -76,6 +76,12 @@ namespace Bussiness_Manager.Controllers
             var paginatedList = PaginatedList<shopDetailDto>.manageShopPagination(result, pageNumber ?? 1, pageSize);
             return View(paginatedList);
         }
+        //public async Task<IActionResult> deleteShop(int shopId)
+        //{
+        //    IGenericContainer<int> result = new GenericContainer<int>();
+        //    result = await _selling.DeleteShop(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext, _configuration)), shopId);
+        //    return RedirectToAction("manageShop");
+        //}
         public async Task<IActionResult> deleteItem(int? id)
         {
             var product = await _context.products.Where(w => w.productId == id && w.dstatus == "V").FirstOrDefaultAsync();

@@ -149,6 +149,10 @@ namespace Bussiness_Manager.Services
                                     _context.saleInvoices.Update(sale);
                                     foreach(var saleInvoiceDetail in sale.saleInvoiceDetails)
                                     {
+                                        var productsQty = await _context.products.Where(w => w.memberId == memberId && w.shopId == shopId && w.productId == saleInvoiceDetail.productId && w.dstatus == "V").FirstOrDefaultAsync();
+                                        productsQty.qty = (decimal)(productsQty.qty + saleInvoiceDetail.qty);
+                                        _context.products.Update(productsQty);
+                                        await _context.SaveChangesAsync();
                                         saleInvoiceDetail.dstatus = "D";
                                         _context.saleInvoiceDetails.Update(saleInvoiceDetail);
                                     }
@@ -794,6 +798,10 @@ namespace Bussiness_Manager.Services
                             {
                                 foreach(var saleInvoiceDetail in sale.saleInvoiceDetails)
                                 {
+                                    var productsQty = await _context.products.Where(w => w.memberId == memberId && w.shopId == shopId && w.productId == saleInvoiceDetail.productId && w.dstatus == "V").FirstOrDefaultAsync();
+                                    productsQty.qty = (decimal)(productsQty.qty + saleInvoiceDetail.qty);
+                                    _context.products.Update(productsQty);
+                                    await _context.SaveChangesAsync();
                                     saleInvoiceDetail.dstatus = "D";
                                     _context.saleInvoiceDetails.Update(saleInvoiceDetail);
                                 }
@@ -935,7 +943,7 @@ namespace Bussiness_Manager.Services
             }
             return result;
         }
-        public async Task<GenericContainer<List<shopDetailDto>>> manageShops(int memberId)
+        public async Task<GenericContainer<List<shopDetailDto>>> manageShops(int memberId, int shopId)
         {
             GenericContainer<List<shopDetailDto>> result = new GenericContainer<List<shopDetailDto>>();
             try
@@ -944,6 +952,7 @@ namespace Bussiness_Manager.Services
                 {
                     memberId = s.memberId,
                     shopId = s.shopId,
+                    isShopId=shopId,
                     shopName = s.shopName,
                     shopDescription = s.shopDescription,
                     bussinessType = s.bussinessType,
@@ -963,5 +972,10 @@ namespace Bussiness_Manager.Services
             }
             return result;
         }
+        //public async Task<GenericContainer<int>> DeleteShop(int memberId, int shopId)
+        //{
+        //    GenericContainer<int> result = new GenericContainer<int>();
+
+        //}
     }
 }

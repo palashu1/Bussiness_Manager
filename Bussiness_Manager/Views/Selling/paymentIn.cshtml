@@ -78,13 +78,13 @@
                 <div class="invoice_no">
                     <div class="form-group">
                         <label asp-for="paymentInDetailDtos[i].balanceAmount">Balance Amt</label>
-                        <input asp-for="paymentInDetailDtos[i].balanceAmount" type="text" readonly class="form-control" value="@Model.paymentInDetailDtos[i].balanceAmount">
+                        <input asp-for="paymentInDetailDtos[i].balanceAmount"  type="text" readonly class="form-control" value="@Model.paymentInDetailDtos[i].balanceAmount">
                     </div>
                 </div>
                 <div class="invoice_no">
                     <div class="form-group">
                         <label>Payment</label>
-                        <input type="number" asp-for="paymentInDetailDtos[i].paymentAmount" id="paymentInput@(i)" type="number" min="0" class="form-control" onchange="checkAnyInputValue()" value="@Model.paymentInDetailDtos[i].paymentAmount" placeholder="0">
+                        <input type="number" asp-for="paymentInDetailDtos[i].paymentAmount" id="paymentInput@(i)" type="number" min="0" class="form-control" onchange="checkAnyInputValue()"  value="@Model.paymentInDetailDtos[i].paymentAmount" placeholder="0">
                     </div>
                 </div>
             </div>
@@ -131,4 +131,5 @@
             submitButton.disabled = !anyGreaterThanZero;
         }
     </script>
+    
 }
