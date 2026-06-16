@@ -8,10 +8,10 @@ namespace Bussiness_Manager.Dto
     {
         public int saleId { get; set; }
         public int memberId { get; set; }
-        public int shopId { get; set; }
-        public int customerId { get; set; }
+        public int? shopId { get; set; }
+        public int? customerId { get; set; }
         [Required(ErrorMessage = "Required")]
-        public string saleInvoiceNo { get; set; }
+        public string? saleInvoiceNo { get; set; }
         public decimal? netAmount { get; set; }
         public decimal? discount { get; set; }
         public decimal? totalAmount { get; set; }

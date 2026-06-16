@@ -291,7 +291,7 @@ namespace Bussiness_Manager.Controllers
                 saleId = model.SaleInvoice.saleId,
                 memberId = Convert.ToInt32(memberId),
                 shopId = Convert.ToInt32(shopId),
-                customerId = model.SaleInvoice.customerId,
+                customerId = (int)model.SaleInvoice.customerId,
                 saleInvoiceNo = model.SaleInvoice.saleInvoiceNo,
                 discount = model.SaleInvoice.discount,
                 paymentMode = Helper.getPaymentMode(Convert.ToInt32(model.SaleInvoice.paymentMode)),
