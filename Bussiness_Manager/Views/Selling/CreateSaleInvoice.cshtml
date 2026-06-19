@@ -5,6 +5,10 @@
     Layout = "~/Views/Shared/_mainLayout.cshtml";
 }
 
+
+<div>
+    <h1>Create sales</h1>
+</div>
 <div class="heading_with_bread d-flex align-items-center">
     <div class="left_icon">
         <i class="fa fa-cubes bx bx-bar-chart-alt" aria-hidden="true"></i>
@@ -58,15 +62,6 @@
         </div>
     </div>
 
-    @* <div class="saleForm">
-        <div class="sellTransaction">
-            <div style="width:100%">
-                <label asp-for="SaleInvoice.discount">Other discount(₹)</label>
-                <input asp-for="SaleInvoice.discount" type="number" value="0" class="form-control other-discount" data-index="0" />
-
-            </div>
-        </div>
-    </div> *@
 
     <div class="saleForm">
         <div class="sellTransaction">
@@ -94,7 +89,7 @@
     </div>
 </form>
 
-@section Scripts 
+@section Scripts
 {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -113,7 +108,7 @@
             const salePrice = parseFloat(selectElement.options[selectElement.selectedIndex].getAttribute('data-price'));
             const quantity = parseFloat(qtyElement.value) || 0;
             const discount = parseFloat(discountElement.value) || 0;
-           
+
             const rowTotal = ((salePrice * quantity) - discount);
             totalElement.textContent = `Total: ₹${rowTotal.toFixed(2)}`;
 
@@ -171,9 +166,9 @@
             productSelect.setAttribute('data-index', productIndex);
             productSelect.innerHTML = `@foreach (var product in Model.Products)
         {
-                                        <option value="@product.productId" data-price="@product.salePrice">
+                                                    <option value="@product.productId" data-price="@product.salePrice">
                 @product.productName - ₹@product.salePrice
-                                        </option>
+                                                    </option>
         }`;
 
             // Create an input field for quantity
@@ -233,10 +228,10 @@
             var overallTotalText = document.getElementById('overall-total').innerText;
             var overallTotal = parseFloat(overallTotalText.replace('₹', '').trim());
             if (input.value >= overallTotal) {
-                input.value = overallTotal;  
+                input.value = overallTotal;
             }
         }
     </script>
 
-   
+
 }

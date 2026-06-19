@@ -26,30 +26,30 @@ namespace Bussiness_Manager.Controllers
             return View();
         }
 
-        public async Task<IActionResult> createUpdateShop(int shopId=0)
+        public async Task<IActionResult> createUpdateShop(int shopId = 0)
         {
             shopDetailDto shop = new shopDetailDto();
-            if (shopId > 0) 
+            if (shopId > 0)
             {
                 shop = _context.shopDetails.Where(w => w.memberId == Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext, _configuration)) && w.shopId == shopId && w.dstatus == "V").Select(s => new shopDetailDto()
                 {
-                    shopId=s.shopId,
-                    memberId=s.memberId,
-                    shopName=s.shopName,
-                    shopDescription=s.shopDescription,
-                    bussinessType=s.bussinessType,
-                    logo=s.logo,
-                    shopAddress=s.shopAddress,
-                    dstatus=s.dstatus,
-                    createdOn=s.createdOn,
-                    updatedOn=s.updatedOn
+                    shopId = s.shopId,
+                    memberId = s.memberId,
+                    shopName = s.shopName,
+                    shopDescription = s.shopDescription,
+                    bussinessType = s.bussinessType,
+                    logo = s.logo,
+                    shopAddress = s.shopAddress,
+                    dstatus = s.dstatus,
+                    createdOn = s.createdOn,
+                    updatedOn = s.updatedOn
                 }).FirstOrDefault();
             }
             else
             {
                 shop.shopId = 0;
             }
-            
+
             return View(shop);
         }
         [HttpPost]
@@ -63,9 +63,9 @@ namespace Bussiness_Manager.Controllers
         }
         public async Task<IActionResult> manageShop(string searchString, int? pageNumber)
         {
-            IGenericContainer<List<shopDetailDto>> result=new GenericContainer<List<shopDetailDto>>();
+            IGenericContainer<List<shopDetailDto>> result = new GenericContainer<List<shopDetailDto>>();
             int pageSize = 10;
-            result = await _selling.manageShops(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext,_configuration)),Convert.ToInt32(Helper.GetShopIdFromToken(HttpContext,_configuration)));
+            result = await _selling.manageShops(Convert.ToInt32(Helper.GetClaimsFromToken(HttpContext, _configuration)), Convert.ToInt32(Helper.GetShopIdFromToken(HttpContext, _configuration)));
             if (!string.IsNullOrEmpty(searchString))
             {
                 result.Value = result.Value.Where(s => s.shopName.Contains(searchString)
@@ -276,7 +276,10 @@ namespace Bussiness_Manager.Controllers
                 Customers = customers,
                 Products = products,
                 SaleInvoice = new saleInvoiceDto(),
-                paymentModes = modeOfPayments
+                paymentModes = modeOfPayments,
+                SaleInvoiceList = new List<saleInvoiceDetailDto> {
+                    new saleInvoiceDetailDto { qty = 0, discount=0 }
+            }
             };
             return View(model);
         }
